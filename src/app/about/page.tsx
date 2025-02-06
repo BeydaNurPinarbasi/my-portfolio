@@ -20,7 +20,7 @@ const About: React.FC = () => {
 
         <h3 className="text-3xl font-semibold text-gray-800 mb-4">Projects</h3>
         <ul className="text-gray-700 mb-8">
-          <li><a href="#" className="text-blue-500">Proje0</a>: React Native kullanarak geliştirdiğim mobil uygulama.</li>
+          <li><a href="#" className="text-blue-500">Proje0</a>: Açıklama </li>
           <li><a href="#" className="text-blue-500">Proje1 </a>: Açıklama</li>
           <li><a href="#" className="text-blue-500">Proje2</a>: Açıklama</li>
         </ul>
