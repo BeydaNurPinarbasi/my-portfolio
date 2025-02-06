@@ -15,6 +15,8 @@ const Contact: React.FC = () => {
   return (
     <section id="contact" className="py-12 px-4 bg-gray-100">
       <div className="max-w-6xl mx-auto text-center">
+
+      <p className="text-lg text-gray-700 mb-8"> Bu sayfanın geliştirilmesi tamamlanmamıştır. iletişim için beydanur.pinarbasi@gmail.com veyahut linkedlyn tercih ediniz!</p>
         <h2 className="text-4xl font-bold text-gray-800 mb-6">Contact Me</h2>
         <p className="text-lg text-gray-700 mb-8">
           Eğer projelerim veya işbirlikleri hakkında daha fazla bilgi almak isterseniz, aşağıdaki formu doldurarak benimle iletişime geçebilirsiniz.
