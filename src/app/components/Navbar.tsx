@@ -9,10 +9,10 @@ export default function Navbar() {
   ];
 
   const baseLinkStyles =
-    "px-4 py-2 rounded-md transition bg-white text-purple-700 hover:bg-purple-500 hover:text-white";
+    "px-4 py-2 rounded-md transition text-black hover:bg-purple-500 hover:text-white";
 
   return (
-    <nav className="bg-purple-700 text-white p-4 flex justify-between items-center rounded-lg shadow-lg">
+    <nav className="bg-transparent text-black p-4 flex justify-between items-center fixed top-0 left-0 w-full z-10 backdrop-blur-lg shadow-lg">
       <h1 className="text-xl font-bold">Beyda.dev</h1>
       <div className="space-x-4">
         {navItems.map((item) => (

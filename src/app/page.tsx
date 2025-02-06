@@ -2,14 +2,33 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { FaInstagram, FaLinkedin, FaDownload, FaEnvelope } from "react-icons/fa"; // İkonlar eklendi
+import { FaInstagram, FaLinkedin, FaDownload, FaEnvelope } from "react-icons/fa"; 
 
 export default function Home() {
   return (
-    <div className="text-center mt-10 flex flex-col items-center">
-      <div className="flex items-center space-x-8">
+    <div className="relative min-h-screen flex flex-col items-center text-center mt-10">
+      
+      {/* Arka Plan */}
+      <div
+        className="absolute inset-0 bg-cover bg-center "
+        style={{
+          backgroundImage: "url('/Wallpaper_Paris.jpg')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          height: "100vh",
+          width: "100vw",
+          position: "fixed",
+          zIndex: -1,
+          filter: "blur(4px)", // Daha az bulanıklık için 1px kullan
+          WebkitFilter: "blur(2px)", // Safari için de ekle
+        }}
+      ></div>
+
+      {/* İçerik */}
+      <div className="relative z-10 flex items-center space-x-8">
         
-        {/* Profil Fotoğrafı - Animasyonlu */}
+        {/* Profil Fotoğrafı */}
         <motion.div
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}
@@ -31,61 +50,70 @@ export default function Home() {
           <h1 className="text-4xl font-serif font-bold text-black mt-4">
             Merhaba, ben Beyda! 👋
           </h1>
-          <p className="mt-6 text-xl text-stone-900">
+          <p className="mt-6 text-xl text-black">
             iOS & Backend Developer | React, Next.js ve modern teknolojilerle projeler geliştiriyorum.
           </p>
-          <p className="mt-4 text-md text-stone-900">
-            Hayatı kod yazmaktan ibaret teknolojinin olduğu her alanda mutlu oluyor ve yeni yeteneklere ilham vermeyi seviyor🚀
+          <p className="mt-4 text-md text-black">
+            Hayatı kod yazmaktan ibaret teknolojinin olduğu her alanda mutlu oluyor ve yeni yeteneklere ilham vermeyi seviyorum 🚀
           </p>
-          <p className="mt-4 text-md text-stone-900 italic">
+          <p className="mt-4 text-md text-black italic">
             “Her gün yeni bir satır kod, yeni bir macera!” ☕
           </p>
 
-           {/* Uzmanlık Alanları */}
-            <div className="mt-8 grid grid-cols-2 gap-6 text-base text-gray-700">
-              <div className="bg-gray-100 p-3 rounded-lg">💻 iOS & Backend Development</div>
-              <div className="bg-gray-100 p-3 rounded-lg">🌍 Dijital Pazarlama & İçerik Üreticisi</div>
-              <div className="bg-gray-100 p-3 rounded-lg">🎓 Mentorluk & Eğitmen</div>
-              <div className="bg-gray-100 p-3 rounded-lg">🚀 React, Next.js, .NET, React Native</div>
-            </div>
+          {/* Yetenek Kartları */}
+          <div className="mt-8 grid grid-cols-2 gap-6 text-base text-white">
+            {[
+              "💻 iOS & Backend Development",
+              "🌍 Dijital Pazarlama & İçerik Üreticisi",
+              "🎓 Mentorluk & Eğitmen",
+              "🚀 React, Next.js, .NET, React Native"
+            ].map((skill, index) => (
+              <div
+                key={index}
+                className="bg-neutral-700 bg-opacity-50 backdrop-blur-lg hover:backdrop-blur-xl hover:bg-purple-700 transition p-3 rounded-lg"
+              >
+                {skill}
+              </div>
+            ))}
+          </div>
 
           {/* Butonlar */}
           <div className="mt-8 flex space-x-6">
-          <a
-            href="/projects"
-            className="bg-purple-700 text-white px-6 py-3 rounded-lg hover:bg-purple-300 transition"
-          >
-            🚀 Projelerimi Keşfet
-          </a>
-
             <a
               href="/contact"
-              className="border border-gray-600 px-6 py-3 rounded-lg hover:bg-gray-100 transition"
+              className="bg-purple-700 px-6 py-3 rounded-lg text-white hover:bg-purple-300 transition"
             >
               📩 Benimle İletişime Geç
             </a>
-            <a
-              href="/Beyda_Nur_Pinarbasi_CV.pdf" // CV'ni public klasörüne ekle!
-              download
-              className="flex items-center border border-gray-600 px-6 py-3 rounded-lg hover:bg-gray-100 transition"
+            <a   
+              href="/projects"
+              className="border border-white text-white px-6 py-3 rounded-lg hover:bg-purple-700 hover:border-purple-700 transition flex items-center"
             >
-              <FaDownload className="mr-2" /> CV’mi İndir
+              🚀 Projelerimi Keşfet
             </a>
+           <a
+              href="/Beyda_Nur_Pinarbasi_CV.pdf"
+              download
+              className="border border-white text-white px-6 py-3 rounded-lg hover:bg-purple-700 hover:border-purple-700 transition flex items-center"
+            >
+              <FaDownload className="mr-2 text-lg" /> CV’mi İndir
+            </a>
+       
           </div>
 
-          {/* Sosyal Medya İkonları */}
-          <div className="mt-8 flex space-x-6 text-3xl text-gray-700">
-            <a href="https://www.linkedin.com/in/beydanur" target="_blank">
-              <FaLinkedin className="hover:text-blue-700 transition" />
-            </a>
-            <a href="https://www.instagram.com/cekununzamani" target="_blank">
-              <FaInstagram className="hover:text-red-600 transition" />
-            </a>
-            {/* Gmail İkonu */}
-            <a href="mailto:beydanur.pinarbasi@gmail.com" target="_blank">
-              <FaEnvelope className="hover:text-red-500 transition" />
-            </a>
+          {/* Sosyal Medya */}
+          <div className="mt-8 flex space-x-6 text-3xl text-white">
+            {[
+              { href: "https://www.linkedin.com/in/beydanur", icon: <FaLinkedin className="hover:text-blue-700 transition" /> },
+              { href: "https://www.instagram.com/cekununzamani", icon: <FaInstagram className="hover:text-red-600 transition" /> },
+              { href: "mailto:beydanur.pinarbasi@gmail.com", icon: <FaEnvelope className="hover:text-red-500 transition" /> }
+            ].map((social, index) => (
+              <a key={index} href={social.href} target="_blank">
+                {social.icon}
+              </a>
+            ))}
           </div>
+
         </div>
       </div>
     </div>
