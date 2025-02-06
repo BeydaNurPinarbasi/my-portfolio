@@ -2,16 +2,22 @@ import ProjectCard from "../components/ProjectCard";
 
 const projects = [
   {
-    title: "Depo Yönetim Sistemi",
-    description: "React, Redux ve Firebase kullanarak geliştirdiğim bir sistem.",
+    title: "Proje0",
+    description: "Açıklama",
     link: "https://github.com/beydanp/firebase-depo",
   },
   {
-    title: "React Native Ürün Arama",
+    title: "Proje1",
+    description: "React Native ile oluşturduğum mobil uygulama.",
+    link: "https://github.com/beydanp/react-native-search",
+  },
+  {
+    title: "Proje2",
     description: "React Native ile oluşturduğum mobil uygulama.",
     link: "https://github.com/beydanp/react-native-search",
   },
 ];
+
 
 export default function ProjectsPage() {
   return (
