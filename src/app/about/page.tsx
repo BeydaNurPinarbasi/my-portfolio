@@ -6,8 +6,7 @@ const About: React.FC = () => {
       <div className="max-w-6xl mx-auto text-center">
         <h2 className="text-4xl font-bold text-gray-800 mb-6">About Me</h2>
         <p className="text-lg text-gray-700 mb-8">
-          Merhaba! Ben Beyda, bir yazılım geliştiricisiyim ve teknolojiye olan tutkum beni her geçen gün daha fazla geliştirmeye itiyor.
-          Web ve mobil uygulama geliştirme konusunda çalışarak, kullanıcı dostu, verimli ve şık çözümler yaratmayı seviyorum.
+          Merhaba ben Beyda, Software Developer olarak kariyerime devam ediyorum. 
         </p>
 
         <h3 className="text-3xl font-semibold text-gray-800 mb-4">Skills & Expertise</h3>
