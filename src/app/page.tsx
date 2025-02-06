@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { FaInstagram, FaLinkedin, FaDownload } from "react-icons/fa"; // İkonlar eklendi
+import { FaInstagram, FaLinkedin, FaDownload, FaEnvelope } from "react-icons/fa"; // İkonlar eklendi
 
 export default function Home() {
   return (
@@ -49,7 +49,6 @@ export default function Home() {
               <div className="bg-gray-100 p-3 rounded-lg">🚀 React, Next.js, .NET, React Native</div>
             </div>
 
-
           {/* Butonlar */}
           <div className="mt-8 flex space-x-6">
           <a
@@ -81,6 +80,10 @@ export default function Home() {
             </a>
             <a href="https://www.instagram.com/cekununzamani" target="_blank">
               <FaInstagram className="hover:text-red-600 transition" />
+            </a>
+            {/* Gmail İkonu */}
+            <a href="mailto:beydanur.pinarbasi@gmail.com" target="_blank">
+              <FaEnvelope className="hover:text-red-500 transition" />
             </a>
           </div>
         </div>
