@@ -26,7 +26,7 @@ export default function Home() {
       ></div>
 
       {/* İçerik */}
-      <div className="relative z-10 flex flex-col md:flex-row items-center space-y-6 md:space-x-8 md:space-y-0">
+      <div className="relative z-10 flex flex-col md:flex-row items-center mt-20 md:mt-10 space-y-6 md:space-x-8 md:space-y-0">
         
         {/* Profil Fotoğrafı */}
         <motion.div
@@ -40,7 +40,7 @@ export default function Home() {
               alt="Beyda Nur Pınarbaşı"
               width={250}
               height={250}
-              className="shadow-lg rounded-lg md:w-[400px] md:h-[400px]"
+              className="shadow-lg rounded-lg md:w-[400px] md:h-[400px] mt-6 md:mt-0"
             />
           </motion.div>
         </motion.div>
