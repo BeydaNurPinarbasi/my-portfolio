@@ -6,11 +6,11 @@ import { FaInstagram, FaLinkedin, FaDownload, FaEnvelope } from "react-icons/fa"
 
 export default function Home() {
   return (
-    <div className="relative min-h-screen flex flex-col items-center text-center mt-10">
+    <div className="relative min-h-screen flex flex-col items-center text-center mt-10 px-4 md:px-10">
       
       {/* Arka Plan */}
       <div
-        className="absolute inset-0 bg-cover bg-center "
+        className="absolute inset-0 bg-cover bg-center"
         style={{
           backgroundImage: "url('/Wallpaper_Paris.jpg')",
           backgroundSize: "cover",
@@ -20,13 +20,13 @@ export default function Home() {
           width: "100vw",
           position: "fixed",
           zIndex: -1,
-          filter: "blur(4px)", // Daha az bulanıklık için 1px kullan
-          WebkitFilter: "blur(2px)", // Safari için de ekle
+          filter: "blur(2px)",
+          WebkitFilter: "blur(2px)",
         }}
       ></div>
 
       {/* İçerik */}
-      <div className="relative z-10 flex items-center space-x-8">
+      <div className="relative z-10 flex flex-col md:flex-row items-center space-y-6 md:space-x-8 md:space-y-0">
         
         {/* Profil Fotoğrafı */}
         <motion.div
@@ -38,19 +38,19 @@ export default function Home() {
             <Image
               src="/profil-foto.jpeg"
               alt="Beyda Nur Pınarbaşı"
-              width={400}
-              height={400}
-              className="shadow-lg rounded-lg"
+              width={250}
+              height={250}
+              className="shadow-lg rounded-lg md:w-[400px] md:h-[400px]"
             />
           </motion.div>
         </motion.div>
 
         {/* Yazılar */}
-        <div className="text-left max-w-2xl">
-          <h1 className="text-4xl font-serif font-bold text-black mt-4">
+        <div className="text-left max-w-md md:max-w-2xl">
+          <h1 className="text-3xl md:text-4xl font-serif font-bold text-black mt-4">
             Merhaba, ben Beyda! 👋
           </h1>
-          <p className="mt-6 text-xl text-black">
+          <p className="mt-4 text-lg md:text-xl text-black">
             iOS & Backend Developer | React, Next.js ve modern teknolojilerle projeler geliştiriyorum.
           </p>
           <p className="mt-4 text-md text-black">
@@ -61,13 +61,8 @@ export default function Home() {
           </p>
 
           {/* Yetenek Kartları */}
-          <div className="mt-8 grid grid-cols-2 gap-6 text-base text-white">
-            {[
-              "💻 iOS & Backend Development",
-              "🌍 Dijital Pazarlama & İçerik Üreticisi",
-              "🎓 Mentorluk & Eğitmen",
-              "🚀 React, Next.js, .NET, React Native"
-            ].map((skill, index) => (
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-base text-white">
+            {["💻 iOS & Backend Development", "🌍 Dijital Pazarlama & İçerik Üreticisi", "🎓 Mentorluk & Eğitmen", "🚀 React, Next.js, .NET, React Native"].map((skill, index) => (
               <div
                 key={index}
                 className="bg-neutral-700 bg-opacity-50 backdrop-blur-lg hover:backdrop-blur-xl hover:bg-purple-700 transition p-3 rounded-lg"
@@ -78,33 +73,21 @@ export default function Home() {
           </div>
 
           {/* Butonlar */}
-          <div className="mt-8 flex space-x-6">
-            <a
-              href="/contact"
-              className="bg-purple-700 px-6 py-3 rounded-lg text-white hover:bg-purple-300 transition"
-            >
+          <div className="mt-6 flex flex-wrap justify-center md:justify-start space-x-4 space-y-4 md:space-y-0">
+            <a href="/contact" className="bg-purple-700 px-6 py-3 rounded-lg text-white hover:bg-purple-300 transition">
               📩 Benimle İletişime Geç
             </a>
-            <a   
-              href="/projects"
-              className="border border-white text-white px-6 py-3 rounded-lg hover:bg-purple-700 hover:border-purple-700 transition flex items-center"
-            >
+            <a href="/projects" className="border border-white text-white px-6 py-3 rounded-lg hover:bg-purple-700 hover:border-purple-700 transition flex items-center">
               🚀 Projelerimi Keşfet
             </a>
-           <a
-              href="/Beyda_Nur_Pinarbasi_CV.pdf"
-              download
-              className="border border-white text-white px-6 py-3 rounded-lg hover:bg-purple-700 hover:border-purple-700 transition flex items-center"
-            >
+            <a href="/Beyda_Nur_Pinarbasi_CV.pdf" download className="border border-white text-white px-6 py-3 rounded-lg hover:bg-purple-700 hover:border-purple-700 transition flex items-center">
               <FaDownload className="mr-2 text-lg" /> CV’mi İndir
             </a>
-       
           </div>
 
           {/* Sosyal Medya */}
-          <div className="mt-8 flex space-x-6 text-3xl text-white">
-            {[
-              { href: "https://www.linkedin.com/in/beydanur", icon: <FaLinkedin className="hover:text-blue-700 transition" /> },
+          <div className="mt-6 flex space-x-6 text-3xl text-white justify-center md:justify-start">
+            {[{ href: "https://www.linkedin.com/in/beydanur", icon: <FaLinkedin className="hover:text-blue-700 transition" /> },
               { href: "https://www.instagram.com/cekununzamani", icon: <FaInstagram className="hover:text-red-600 transition" /> },
               { href: "mailto:beydanur.pinarbasi@gmail.com", icon: <FaEnvelope className="hover:text-red-500 transition" /> }
             ].map((social, index) => (
@@ -113,7 +96,6 @@ export default function Home() {
               </a>
             ))}
           </div>
-
         </div>
       </div>
     </div>
