@@ -19,7 +19,7 @@ export default function Navbar() {
       {/* Menü Açıldığında Arka Planı Koyulaştır */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-300"
+          className="fixed inset-0 bg-black bg-opacity-60 transition-opacity duration-300 z-10"
           onClick={() => setIsOpen(false)}
         ></div>
       )}
@@ -67,7 +67,7 @@ export default function Navbar() {
           </button>
 
           {/* Menü İçeriği */}
-          <div className="flex flex-col mt-16 space-y-4 p-6">
+          <div className="flex flex-col mt-16 space-y-4 p-6 bg-white">
             {navItems.map((item) => (
               <Link
                 key={item.href}
