@@ -13,8 +13,10 @@ export default function Navbar() {
 
   return (
     <nav className="bg-transparent text-black p-4 flex justify-between items-center fixed top-0 left-0 w-full z-10 backdrop-blur-lg shadow-lg">
-      <h1 className="text-xl font-bold">Beyda.dev</h1>
-      <div className="space-x-4">
+      <h1 className="text-xl md:text-2xl font-bold whitespace-nowrap">
+        Beyda.dev
+      </h1>
+      <div className="hidden md:flex space-x-4">
         {navItems.map((item) => (
           <Link key={item.href} href={item.href} className={baseLinkStyles}>
             {item.label}
