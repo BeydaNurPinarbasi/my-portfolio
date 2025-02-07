@@ -52,9 +52,9 @@ export default function Navbar() {
           </button>
         </div>
 
-        {/* **MOBİLDE SAĞDAN AÇILAN MENÜ** */}
+        {/* **MOBİLDE TAM EKRAN AÇILAN MENÜ** */}
         <div
-          className={`fixed top-0 right-0 h-full w-64 bg-white shadow-lg transform transition-transform duration-300 ${
+          className={`fixed top-0 left-0 w-full min-h-screen bg-white shadow-lg transform transition-transform duration-300 ${
             isOpen ? "translate-x-0" : "translate-x-full"
           }`}
         >
@@ -67,12 +67,12 @@ export default function Navbar() {
           </button>
 
           {/* Menü İçeriği */}
-          <div className="flex flex-col mt-16 space-y-4 p-6 bg-white">
+          <div className="flex flex-col items-center justify-center h-full space-y-6 p-6">
             {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className="block px-4 py-2 text-lg text-black hover:bg-purple-500 hover:text-white transition"
+                className="block px-6 py-3 text-xl font-semibold text-black hover:bg-purple-500 hover:text-white transition rounded-lg"
                 onClick={() => setIsOpen(false)} // Menü seçildiğinde kapansın
               >
                 {item.label}
