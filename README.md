@@ -1,6 +1,6 @@
 # <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&weight=600&size=22&pause=1000&color=F7941E&center=true&vCenter=true&width=435&lines=Hey!+I'm+Beyda+Nur+P%C4%B1narba%C5%9F%C4%B1!;Welcome+to+my+Portfolio!" alt="Typing SVG" />
 
-![beyda.dev](https://your-image-url.com)
+![beyda.dev](https://www.beyda.dev/)
 
 🚀 **My personal portfolio website showcasing my projects, skills, and experiences.**  
 🔗 **Live Demo:** [beyda.dev](https://www.beyda.dev/)
