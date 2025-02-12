@@ -24,9 +24,9 @@ export default function Navbar() {
         ></div>
       )}
 
-      <nav className="bg-transparent text-black p-4 fixed top-0 left-0 w-full z-20 backdrop-blur-lg shadow-lg">
+      <nav className="bg-transparent  text-black p-4 fixed top-0 left-0 w-full z-20 backdrop-blur-lg shadow-lg">
         <div className="flex justify-between items-center">
-          <h1 className="text-xl md:text-2xl font-bold whitespace-nowrap">
+          <h1 className="text-xl md:text-xl  font-bold whitespace-nowrap">
             Beyda.dev
           </h1>
 
@@ -36,7 +36,7 @@ export default function Navbar() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-lg text-black hover:text-purple-500 transition"
+                className="text-lg font-serif text-black hover:text-purple-500 transition"
               >
                 {item.label}
               </Link>
@@ -45,7 +45,7 @@ export default function Navbar() {
 
           {/* **MOBİLDE HAMBURGER MENÜ** */}
           <button
-            className="md:hidden text-black p-2"
+            className="md:hidden font-serif text-black p-2"
             onClick={() => setIsOpen(true)}
           >
             <Menu size={32} className="text-purple-500" />
@@ -72,7 +72,7 @@ export default function Navbar() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="block px-6 py-3 text-xl font-semibold text-black hover:bg-purple-500 hover:text-white transition rounded-lg"
+                className="block px-2 py-3 text-xl font-serif text-black hover:bg-purple-500 hover:text-white transition rounded-lg"
                 onClick={() => setIsOpen(false)} // Menü seçildiğinde kapansın
               >
                 {item.label}
