@@ -36,8 +36,8 @@
 
 1. **Clone the repository**  
    ```bash
-   git clone https://github.com/yourusername/portfolio.git
-   cd portfolio
+   git clone https://github.com/beydanurpinarbasi/my-portfolio.git
+   cd my-portfolio
    ```
 2. **Install dependencies**  
    ```bash
@@ -79,4 +79,4 @@ Feel free to fork and customize it! 🚀
 ---
 
 ### 💖 Support
-If you like this project, consider giving it a ⭐ on [GitHub](https://github.com/yourusername/portfolio)! 😍
+If you like this project, consider giving it a ⭐ on [GitHub](https://github.com/beydanurpinarbasi/my-portfolio)! 😍
