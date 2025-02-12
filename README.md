@@ -3,7 +3,7 @@
 ![beyda.dev](https://your-image-url.com)
 
 🚀 **My personal portfolio website showcasing my projects, skills, and experiences.**  
-🔗 **Live Demo:** [beyda.dev](https://beyda.dev)
+🔗 **Live Demo:** [beyda.dev](https://www.beyda.dev/)
 
 ---
 
