@@ -1,8 +1,7 @@
 "use client";
-
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { FaInstagram, FaLinkedin, FaDownload, FaEnvelope } from "react-icons/fa"; 
+import { FaInstagram, FaLinkedin, FaDownload, FaEnvelope } from "react-icons/fa";
 
 export default function Home() {
   return (
@@ -60,16 +59,27 @@ export default function Home() {
             “Her gün yeni bir satır kod, yeni bir macera!” ☕
           </p>
 
-          {/* Yetenek Kartları */}
-          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-base text-white">
-            {["💻 iOS & Backend Development", "🌍 Dijital Pazarlama & İçerik Üreticisi", "🎓 Mentorluk & Eğitmen", "🚀 React, Next.js, .NET, React Native"].map((skill, index) => (
-              <div
-                key={index}
-                className="bg-neutral-700 bg-opacity-50 backdrop-blur-lg hover:backdrop-blur-xl hover:bg-purple-700 transition p-3 rounded-lg"
-              >
-                {skill}
-              </div>
-            ))}
+          {/* Yetenekler */}
+          <div className="mt-6 space-y-6">
+            <div>
+              <h2 className="text-xl font-bold text-black">💻 iOS & Backend Development</h2>
+              <ul className="list-disc list-inside text-black mt-2 space-y-2">
+                <li>iOS uygulama geliştirme</li>
+                <li>Firebase ve MySQL veritabanı yönetimi</li>
+              </ul>
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-black">🌍 Dijital Pazarlama & İçerik Üreticisi</h2>
+              <p className="text-black">SEO üzerine çalışıyorum ve sosyal medya hesabım üzerinden yazılım sürecimi paylaşıyorum </p>
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-black">🎓 Mentorluk & Eğitmen</h2>
+              <p className="text-black">Çeşitli kurumlarda mentorluk yaparak öğrencilere rehberlik ediyorum.</p>
+            </div>
+            <div>
+              <h2 className="text-xl font-bold text-black">🚀 React, Next.js, React Native</h2>
+              <p className="text-black">Modern frontend teknolojileri ile dinamik ve performanslı uygulamalar geliştiriyorum.</p>
+            </div>
           </div>
 
           {/* Butonlar */}
