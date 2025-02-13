@@ -16,7 +16,6 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Menü Açıldığında Arka Planı Koyulaştır */}
       {isOpen && (
         <div
           className="fixed inset-0 bg-black bg-opacity-60 transition-opacity duration-300 z-10"
@@ -24,11 +23,12 @@ export default function Navbar() {
         ></div>
       )}
 
-      <nav className="bg-transparent  text-black p-4 fixed top-0 left-0 w-full z-20 backdrop-blur-lg shadow-lg">
+      <nav className="bg-transparent text-black p-4 fixed top-0 left-0 w-full z-20 backdrop-blur-lg shadow-lg">
         <div className="flex justify-between items-center">
-          <h1 className="text-xl md:text-xl  font-bold whitespace-nowrap">
+          {/* **Ana Sayfa Linki** */}
+          <Link href="/" className="text-xl md:text-xl font-bold whitespace-nowrap">
             Beyda.dev
-          </h1>
+          </Link>
 
           {/* **BÜYÜK EKRANLAR İÇİN MENÜ** */}
           <div className="hidden md:flex space-x-6">
