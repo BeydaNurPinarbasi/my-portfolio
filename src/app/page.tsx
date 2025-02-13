@@ -98,7 +98,7 @@ export default function Home() {
 
           {/* Sosyal Medya */}
           <div className="mt-6 flex space-x-6 text-3xl text-slate-950 justify-center md:justify-start">
-            {[{ href: "https://www.linkedin.com/in/beydanur", icon: <FaLinkedin className="hover:text-blue-700 transition" /> },
+            {[{ href: "https://www.linkedin.com/in/beyda-nur-p%C4%B1narba%C5%9F%C4%B1/", icon: <FaLinkedin className="hover:text-blue-700 transition" /> },
               { href: "https://www.instagram.com/cekununzamani", icon: <FaInstagram className="hover:text-red-600 transition" /> },
               { href: "mailto:beydanur.pinarbasi@gmail.com", icon: <FaEnvelope className="hover:text-red-500 transition" /> }
             ].map((social, index) => (
