@@ -107,10 +107,10 @@ const Contact: React.FC = () => {
           <a href="mailto:beydanur.pinarbasi@gmail.com" className="hover:text-blue-500 text-2xl">
             <FaEnvelope />
           </a>
-          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 text-2xl">
+          <a href="https://www.linkedin.com/in/beyda-nur-p%C4%B1narba%C5%9F%C4%B1/" target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 text-2xl">
             <FaLinkedin />
           </a>
-          <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-pink-500 text-2xl">
+          <a href="https://www.instagram.com/cekununzamani/" target="_blank" rel="noopener noreferrer" className="hover:text-pink-500 text-2xl">
             <FaInstagram />
           </a>
         </div>
