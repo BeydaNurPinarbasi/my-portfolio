@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { FaEnvelope, FaLinkedin, FaInstagram } from 'react-icons/fa';
+import { motion } from 'framer-motion';
 
 const Contact: React.FC = () => {
   const [name, setName] = useState('');
@@ -30,57 +31,84 @@ const Contact: React.FC = () => {
       } else {
         setResponseMsg(data.error || "Mesaj gönderilirken bir hata oluştu.");
       }
-    }catch (error) {
+    } catch (error) {
       if (error instanceof Error) {
         setResponseMsg(`Sunucu hatası: ${error.message}`);
       } else {
         setResponseMsg("Bilinmeyen bir hata oluştu. Daha sonra tekrar deneyin.");
       }
     }
+
+    setLoading(false);
   };
 
   return (
-    <section id="contact" className="py-16 px-6 bg-gray-50 text-gray-800">
-      <div className="max-w-4xl mx-auto text-center">
-        <h2 className="text-4xl font-extrabold text-gray-900 mb-4">İletişime Geç!</h2>
-        <p className="text-lg text-gray-600 mb-8">
-          Soruların mı var? Bana ulaşmak için aşağıdaki formu doldurabilirsin.
-        </p>
+    <section className="relative min-h-screen flex items-center justify-center pt-20">
+      {/* Arka Plan */}
+      <div
+        className="fixed inset-0 bg-cover bg-center"
+        style={{ backgroundImage: "url('/Wallpaper_Nasa.jpeg')" }}
+      />
+      <div className="fixed inset-0 bg-opacity-60"></div>
 
-        <form onSubmit={handleSubmit} className="max-w-lg mx-auto bg-white p-8 rounded-xl shadow-xl">
+      {/* İçerik */}
+      <div className="relative z-10 max-w-4xl mx-auto text-center text-white p-6">
+        <motion.h2
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1 }}
+          className="text-3xl sm:text-4xl font-extrabold mb-4"
+        >
+          İletişime Geç!
+        </motion.h2>
+
+        <motion.p
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.3 }}
+          className="text-base sm:text-lg mb-8"
+        >
+          Soruların mı var? Bana ulaşmak için aşağıdaki formu doldurabilirsin.
+        </motion.p>
+
+        {/* Form */}
+        <form 
+          onSubmit={handleSubmit} 
+          className="w-full sm:max-w-md mx-auto bg-white bg-opacity-20 p-6 sm:p-8 rounded-xl shadow-xl backdrop-blur-xs"
+        >
           <div className="mb-4 text-left">
-            <label htmlFor="name" className="block text-lg font-medium">Adınız</label>
+            <label htmlFor="name" className="block text-sm sm:text-lg font-medium">Adınız</label>
             <input
               type="text"
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-3 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
               placeholder="Adınızı girin"
               required
             />
           </div>
 
           <div className="mb-4 text-left">
-            <label htmlFor="email" className="block text-lg font-medium">E-mail</label>
+            <label htmlFor="email" className="block text-sm sm:text-lg font-medium">E-mail</label>
             <input
               type="email"
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
               placeholder="E-mail adresinizi girin"
               required
             />
           </div>
 
           <div className="mb-4 text-left">
-            <label htmlFor="message" className="block text-lg font-medium">Mesajınız</label>
+            <label htmlFor="message" className="block text-sm sm:text-lg font-medium">Mesajınız</label>
             <textarea
               id="message"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              className="w-full px-4 py-3 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-3 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
               placeholder="Mesajınızı yazın..."
               rows={4}
               required
@@ -89,7 +117,7 @@ const Contact: React.FC = () => {
 
           <button
             type="submit"
-            className="w-full py-3 px-6 bg-blue-500 text-white text-lg rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+            className="w-full py-3 px-6 bg-blue-500 text-white text-sm sm:text-lg rounded-lg hover:bg-blue-600 transition-all"
             disabled={loading}
           >
             {loading ? "Gönderiliyor..." : "Mesaj Gönder"}
@@ -97,23 +125,54 @@ const Contact: React.FC = () => {
         </form>
 
         {responseMsg && (
-          <p className={`text-center mt-4 ${responseMsg.includes("hata") ? "text-red-600" : "text-green-600"}`}>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+            className={`text-center mt-4 ${responseMsg.includes("hata") ? "text-red-600" : "text-green-600"}`}
+          >
             {responseMsg}
-          </p>
+          </motion.p>
         )}
 
         {/* Sosyal Medya */}
-        <div className="mt-8 flex justify-center space-x-6 text-gray-600">
-          <a href="mailto:beydanur.pinarbasi@gmail.com" className="hover:text-blue-500 text-2xl">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.5 }}
+          className="mt-8 flex justify-center space-x-6 text-gray-300"
+        >
+          <motion.a 
+            href="mailto:beydanur.pinarbasi@gmail.com" 
+            className="text-2xl hover:text-blue-400"
+            whileHover={{ y: -5 }}
+            transition={{ type: "spring", stiffness: 300 }}
+          >
             <FaEnvelope />
-          </a>
-          <a href="https://www.linkedin.com/in/beyda-nur-p%C4%B1narba%C5%9F%C4%B1/" target="_blank" rel="noopener noreferrer" className="hover:text-blue-500 text-2xl">
+          </motion.a>
+          
+          <motion.a 
+            href="https://www.linkedin.com/in/beyda-nur-p%C4%B1narba%C5%9F%C4%B1/" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="text-2xl hover:text-blue-400"
+            whileHover={{ y: -5 }}
+            transition={{ type: "spring", stiffness: 300 }}
+          >
             <FaLinkedin />
-          </a>
-          <a href="https://www.instagram.com/cekununzamani/" target="_blank" rel="noopener noreferrer" className="hover:text-pink-500 text-2xl">
+          </motion.a>
+          
+          <motion.a 
+            href="https://www.instagram.com/cekununzamani/" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="text-2xl hover:text-pink-400"
+            whileHover={{ y: -5 }}
+            transition={{ type: "spring", stiffness: 300 }}
+          >
             <FaInstagram />
-          </a>
-        </div>
+          </motion.a>
+        </motion.div>
       </div>
     </section>
   );
