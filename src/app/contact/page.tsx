@@ -52,7 +52,7 @@ const Contact: React.FC = () => {
       <div className="fixed inset-0 bg-opacity-60"></div>
 
       {/* İçerik */}
-      <div className="relative z-10 max-w-4xl mx-auto text-center text-black p-6">
+      <div className="relative z-10 max-w-4xl mx-auto text-center text-white p-6">
         <motion.h2
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
