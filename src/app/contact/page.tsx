@@ -78,15 +78,19 @@ const Contact: React.FC = () => {
         >
           <div className="mb-4 text-left">
             <label htmlFor="name" className="block text-sm sm:text-lg font-medium">Adınız</label>
-            <input
+
+
+           <input
               type="text"
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-3 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
+              className="w-full px-4 py-3 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-500"
               placeholder="Adınızı girin"
               required
             />
+
+  
           </div>
 
           <div className="mb-4 text-left">
