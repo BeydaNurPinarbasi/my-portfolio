@@ -96,27 +96,29 @@ const Contact: React.FC = () => {
           <div className="mb-4 text-left">
             <label htmlFor="email" className="block text-sm sm:text-lg font-medium">E-mail</label>
             <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
-              placeholder="E-mail adresinizi girin"
-              required
-            />
+            type="email"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full px-4 py-3 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base text-gray-900 placeholder-gray-500"
+            placeholder="E-mail adresinizi girin"
+            required
+          />
+
           </div>
 
           <div className="mb-4 text-left">
             <label htmlFor="message" className="block text-sm sm:text-lg font-medium">Mesajınız</label>
             <textarea
-              id="message"
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              className="w-full px-4 py-3 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base"
-              placeholder="Mesajınızı yazın..."
-              rows={4}
-              required
-            />
+            id="message"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            className="w-full px-4 py-3 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base text-gray-900 placeholder-gray-500"
+            placeholder="Mesajınızı yazın..."
+            rows={4}
+            required
+          />
+
           </div>
 
           <button
