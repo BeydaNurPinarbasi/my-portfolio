@@ -56,7 +56,7 @@ export default function ProjectsPage() {
           My Projects
         </h2>
         <p className="text-lg text-gray-900 mb-12 drop-shadow-md">
-          İşte geliştirdiğim bazı projeler. Daha fazla detay için GitHub'ımı ziyaret edebilirsin! 🚀
+          İşte geliştirdiğim bazı projeler. Daha fazla detay için GitHub&apos;ımı ziyaret edebilirsin! 🚀
         </p>
 
         {/* Proje Kartları */}
