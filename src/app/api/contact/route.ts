@@ -20,7 +20,7 @@ export async function POST(req: Request) {
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: "beydanur.pinarbasi@gmail.com", 
-      subject: `Yeni İletişim Formu Mesajı - ${name}`,
+      subject: `beyda.dev sitenden mesaj var - ${name}`,
       text: `Gönderen: ${name} (${email})\n\nMesaj:\n${message}`,
     };
 
