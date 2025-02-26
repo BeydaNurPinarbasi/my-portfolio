@@ -50,9 +50,14 @@ export default function Home() {
 
         {/* Yazılar */}
         <div className="text-left max-w-md md:max-w-2xl">
-          <h1 className="text-3xl  md:text-4xl font-serif  text-black mt-4">
-            Merhaba, ben Beyda Nur! 👋
-          </h1>
+        <div className="flex items-center gap-4">
+        <h2 className="text-3xl md:text-5xl font-serif text-black"> Merhaba ben </h2>
+    <h2 className="text-5xl font-extrabold bg-gradient-to-r from-purple-400 to-blue-500 inline-block text-transparent bg-clip-text drop-shadow-lg"> 
+    Beyda Nur 
+    </h2>
+    
+  </div>
+
           <p className="mt-4 text-md md:text-l font-serif text-black">
             iOS & Backend Developer | React, Next.js ve modern teknolojilerle projeler geliştiriyorum.
           </p>
@@ -82,31 +87,33 @@ export default function Home() {
               <p className="text-black font-serif">Modern frontend teknolojileri ile dinamik ve performanslı uygulamalar geliştiriyorum.</p>
             </div>
           </div>
-
-          {/* Butonlar */}
-          <div className="mt-6 flex flex-wrap justify-center md:justify-start space-x-4 space-y-4 md:space-y-0">
-            <a href="/contact" className="bg-purple-700 px-6 py-3 rounded-lg font-serif text-black hover:bg-purple-300 transition">
+          <div className="mt-6 flex flex-wrap justify-start space-x-4 space-y-4 md:space-y-0">
+            <a href="/contact" className="bg-gradient-to-r from-purple-600 to-blue-500 px-6 py-3 rounded-lg text-white font-semibold hover:shadow-lg transition-all duration-300">
               📩 Benimle İletişime Geç
             </a>
-            <a href="/projects" className="border border-gray-700 font-serif text-black px-6 py-3 rounded-lg hover:bg-purple-700 hover:border-purple-700 transition flex items-center">
+            <a href="/projects" className="border border-gray-700 text-black px-6 py-3 rounded-lg hover:bg-gradient-to-r from-purple-700 to-blue-600 hover:text-white transition-all duration-300 flex items-center">
               🚀 Projelerimi Keşfet
             </a>
-            <a href="/Beyda_Nur_Pinarbasi_CV.pdf" download className="border border-gray-700 font-serif text-black px-6 py-3 rounded-lg hover:bg-purple-700 hover:border-purple-700 transition flex items-center">
+            <a href="/Beyda_Nur_Pinarbasi_CV.pdf" download className="border border-gray-700 text-black px-6 py-3 rounded-lg hover:bg-gradient-to-r from-purple-700 to-blue-600 hover:text-white transition-all duration-300 flex items-center">
               <FaDownload className="mr-2 text-lg" /> CV ’mi İndir
             </a>
           </div>
 
           {/* Sosyal Medya */}
-          <div className="mt-6 flex space-x-6 text-3xl text-slate-950 justify-center md:justify-start">
-            {[{ href: "https://www.linkedin.com/in/beyda-nur-p%C4%B1narba%C5%9F%C4%B1/", icon: <FaLinkedin className="hover:text-blue-700 transition" /> },
-              { href: "https://www.instagram.com/cekununzamani", icon: <FaInstagram className="hover:text-red-600 transition" /> },
-              { href: "mailto:beydanur.pinarbasi@gmail.com", icon: <FaEnvelope className="hover:text-red-500 transition" /> }
-            ].map((social, index) => (
-              <a key={index} href={social.href} target="_blank">
-                {social.icon}
-              </a>
-            ))}
-          </div>
+<div className="mt-6 flex space-x-6 text-3xl text-slate-950 justify-start">
+  {[
+    { href: "https://www.linkedin.com/in/beyda-nur-p%C4%B1narba%C5%9F%C4%B1/", icon: <FaLinkedin className="hover:text-blue-700 transition" /> },
+    { href: "https://www.instagram.com/cekununzamani", icon: <FaInstagram className="hover:text-red-600 transition" /> },
+    { href: "mailto:beydanur.pinarbasi@gmail.com", icon: <FaEnvelope className="hover:text-red-500 transition" /> }
+  ].map((social, index) => (
+    <a key={index} href={social.href} target="_blank" rel="noopener noreferrer">
+      <div className="p-3 rounded-full bg-transparent border-2 border-gray-300 hover:bg-gray-200 transition">
+        {social.icon}
+      </div>
+    </a>
+  ))}
+</div>
+
         </div>
       </div>
     </div>
