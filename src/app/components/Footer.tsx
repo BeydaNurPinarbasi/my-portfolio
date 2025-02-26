@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="bg-zinc-950 text-white py-8">
+    <footer className="bg-zinc-950 text-white py-10">
       <div className="container mx-auto px-6 grid md:grid-cols-3 gap-8 text-center md:text-left">
         {/* Sol - Hakkımda */}
         <div>
@@ -15,17 +15,17 @@ export default function Footer() {
         <div>
           <h3 className="text-lg font-semibold mb-3">Bağlantılar</h3>
           <ul className="space-y-2">
-          <Link href="/" className="hover:text-purple-400">Ana Sayfa</Link>
-            <li><a href="/about" className="hover:text-purple-400">Hakkımda</a></li>
-            <li><a href="/projects" className="hover:text-purple-400">Projeler</a></li>
-            <li><a href="/contact" className="hover:text-purple-400">İletişim</a></li>
+            <li><Link href="/" className="hover:text-purple-400">Ana Sayfa</Link></li>
+            <li><Link href="/about" className="hover:text-purple-400">Hakkımda</Link></li>
+            <li><Link href="/projects" className="hover:text-purple-400">Projeler</Link></li>
+            <li><Link href="/contact" className="hover:text-purple-400">İletişim</Link></li>
           </ul>
         </div>
 
         {/* Sağ - Sosyal Medya */}
         <div>
           <h3 className="text-lg font-semibold mb-3">Bana Ulaş</h3>
-          <div className="flex justify-center md:justify-start space-x-4">
+          <div className="flex justify-center md:justify-start space-x-6">
             <a href="https://github.com/BeydaNurPinarbasi" target="_blank" className="hover:text-purple-400">
               <FaGithub size={24} />
             </a>
