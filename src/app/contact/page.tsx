@@ -6,9 +6,11 @@ import { motion } from 'framer-motion';
 const Contact: React.FC = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState(''); 
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(false);
   const [responseMsg, setResponseMsg] = useState('');
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -106,6 +108,22 @@ const Contact: React.FC = () => {
           />
 
           </div>
+
+
+          <div className="mb-4 text-left">
+        <label htmlFor="phone" className="block text-sm sm:text-lg font-medium">
+    Telefon Numarası
+  </label>
+  <input
+    type="tel" // telefon numarası için tel tipini kullanın
+    id="phone"
+    value={phone}
+    onChange={(e) => setPhone(e.target.value)}
+    className="w-full px-4 py-3 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base text-gray-900 placeholder-gray-500"
+    placeholder="Telefon numaranızı girin"
+    required
+  />
+</div>
 
           <div className="mb-4 text-left">
             <label htmlFor="message" className="block text-sm sm:text-lg font-medium">Mesajınız</label>
