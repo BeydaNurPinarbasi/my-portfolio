@@ -32,7 +32,7 @@ export default function Home() {
       </div>
 
       {/* İçerik */}
-      <div className="relative z-10 flex flex-col md:flex-row items-center mt-20 md:mt-10 space-y-6 md:space-x-8 md:space-y-0">
+      <div className="min-h-screen relative z-10 flex flex-col md:flex-row items-center mt-20 md:mt-10 space-y-6 md:space-x-8 md:space-y-0">
         {/* Profil Fotoğrafı */}
         <motion.div
           initial={{ opacity: 0, y: -50 }}
@@ -63,12 +63,9 @@ export default function Home() {
           </div>
 
           <p className="mt-4 text-md md:text-l font-serif text-black">
-            iOS & Backend Developer | React, Next.js ve modern teknolojilerle
-            projeler geliştiriyorum.
+            iOS & Backend Developer | React, React Native ile  modern teknolojilerle projeler geliştiriyorum.
           </p>
-          <p className="mt-4 text-md font-serif  text-black">
-            Teknoloji geleceğe umut süreci🚀
-          </p>
+          
           <p className="mt-4 text-md font-serif text-black italic">
             “Her gün yeni bir satır kod, yeni bir macera!” ☕
           </p>
@@ -81,18 +78,6 @@ export default function Home() {
               </h2>
             </div>
             <div>
-              <h2 className="text-lg font-serif text-black">
-                🌍 Dijital Pazarlama & İçerik Üreticisi
-              </h2>
-              <p className="text-black font-serif">
-                SEO üzerine çalışıyorum ve sosyal medya hesabım üzerinden
-                yazılım sürecimi paylaşıyorum{" "}
-              </p>
-            </div>
-            <div>
-              <h2 className="text-lg  font-serif text-black">
-                🎓 Mentorluk & Eğitmen
-              </h2>
               <p className="text-black font-serif">
                 Çeşitli kurumlarda mentorluk yaparak öğrencilere rehberlik
                 ediyorum.
@@ -100,10 +85,10 @@ export default function Home() {
             </div>
             <div>
               <h2 className="text-lg  font-serif text-black">
-                🚀 React, Next.js, React Native
+                🚀 React, React Native
               </h2>
               <p className="text-black font-serif">
-                Modern frontend teknolojileri ile dinamik ve performanslı
+                Modern frontend teknolojileri ile dinamik ve performanslı mobil
                 uygulamalar geliştiriyorum.
               </p>
             </div>

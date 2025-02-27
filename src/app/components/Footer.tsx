@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="bg-zinc-950 text-white py-10">
+    <footer className="bg-zinc-950 text-white py-10 ">
       <div className="container mx-auto px-6 grid md:grid-cols-3 gap-8 text-center md:text-left">
         {/* Sol - Hakkımda */}
         <div>
