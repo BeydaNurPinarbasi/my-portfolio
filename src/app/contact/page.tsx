@@ -115,7 +115,7 @@ const Contact: React.FC = () => {
     Telefon Numarası
   </label>
   <input
-    type="tel" // telefon numarası için tel tipini kullanın
+    type="tel" 
     id="phone"
     value={phone}
     onChange={(e) => setPhone(e.target.value)}
