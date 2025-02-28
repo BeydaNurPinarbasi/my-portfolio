@@ -62,9 +62,10 @@ export default function Home() {
             </h2>
           </div>
 
-          <p className="mt-4 text-md md:text-l font-serif text-black">
-            iOS & Backend Developer | React, React Native ile  modern teknolojilerle projeler geliştiriyorum.
-          </p>
+          <h2 className="text-lg font-serif font-medium text-black">
+          💻 iOS & Backend Developer | React, React Native ile modern teknolojilerle projeler geliştiriyorum.
+</h2>
+
           
           <p className="mt-4 text-md font-serif text-black italic">
             “Her gün yeni bir satır kod, yeni bir macera!” ☕
@@ -72,21 +73,16 @@ export default function Home() {
 
           {/* Yetenekler */}
           <div className="mt-6 space-y-6">
-            <div>
-              <h2 className="text-lg font-serif text-black">
-                💻 iOS & Backend Development
-              </h2>
-            </div>
+            
             <div>
               <p className="text-black font-serif">
                 Çeşitli kurumlarda mentorluk yaparak öğrencilere rehberlik
                 ediyorum.
               </p>
+              
             </div>
             <div>
-              <h2 className="text-lg  font-serif text-black">
-                🚀 React, React Native
-              </h2>
+             
               <p className="text-black font-serif">
                 Modern frontend teknolojileri ile dinamik ve performanslı mobil
                 uygulamalar geliştiriyorum.
