@@ -1,68 +1,104 @@
 "use client";
-import React from "react";
-import ProjectCard from "../components/ProjectCard";
-import Particles from "react-tsparticles";
-import { loadSlim } from "tsparticles-slim";
-import { Engine } from "tsparticles-engine";
+import React, { useState } from "react";
 
-const projects = [
+const allProjects = [
   {
-    title: "Firebase Depo Yönetim",
-    description: "Firebase kullanarak oluşturduğum depo yönetim sistemi.",
-    link: "https://github.com/beydanp/firebase-depo",
+    title: "Professional Portfolio | Built with Next.js & React",
+    description: "A professional portfolio website crafted using Next.js and React.",
+    link: "https://github.com/BeydaNurPinarbasi/my-portfolio",
+    liveDemo: "https://beyda.dev",
+    category: "Web",
   },
   {
     title: "React Native Search",
     description: "React Native ile geliştirdiğim arama uygulaması.",
     link: "https://github.com/beydanp/react-native-search",
-  },
-  {
-    title: "Mobil Uygulama Projesi",
-    description: "React Native ile oluşturduğum mobil uygulama.",
-    link: "https://github.com/beydanp/react-native-search",
+    liveDemo: "", 
+    category: "Mobile",
   },
 ];
 
+const categories = ["All", "Web", "Mobile"];
+
 export default function ProjectsPage() {
-  const particlesInit = async (main: Engine) => {
-    await loadSlim(main);
-  };
+  const [selectedCategory, setSelectedCategory] = useState<string>("All");
+
+  const filteredProjects =
+    selectedCategory === "All"
+      ? allProjects
+      : allProjects.filter((project) => project.category === selectedCategory);
 
   return (
-    <section className="relative py-20 px-6 text-gray-950 overflow-hidden">
-      {/* Arka Plan Efekti */}
-      <Particles
-        id="tsparticles"
-        init={particlesInit}
-        options={{
-          fullScreen: { enable: false },
-          particles: {
-            number: { value: 50 },
-            size: { value: 3 },
-            move: { enable: true, speed: 0.6 },
-            shape: { type: "circle" },
-            opacity: { value: 0.3 },
-          },
-          interactivity: {
-            events: { onHover: { enable: true, mode: "repulse" } },
-          },
-        }}
-        className="absolute top-0 left-0 w-full h-full z-0"
-      />
-
-      <div className="relative max-w-5xl mx-auto text-center z-10">
-        {/* Başlık */}
-        <h2 className="text-5xl font-extrabold mb-6 bg-gradient-to-r from-purple-400 to-blue-500 text-transparent bg-clip-text drop-shadow-lg">
-          My Projects
-        </h2>
-        <p className="text-lg text-gray-900 mb-12 drop-shadow-md">
+    <section className="py-20 px-6 text-gray-900">
+      <div className="max-w-4xl mx-auto text-center">
+        <h2 className="text-4xl font-bold mb-6">My Projects</h2>
+        <p className="text-lg text-gray-700 mb-8">
           İşte geliştirdiğim bazı projeler. Daha fazla detay için GitHub&apos;ımı ziyaret edebilirsin! 🚀
         </p>
 
+        {/* Kategoriler */}
+        <div className="flex justify-center gap-4 mb-8">
+          {categories.map((category) => (
+            <button
+              key={category}
+              onClick={() => setSelectedCategory(category)}
+              className={`px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 ${
+                selectedCategory === category
+                  ? "bg-blue-500 text-white"
+                  : "bg-gray-200 hover:bg-blue-400 hover:text-white"
+              }`}
+            >
+              {category}
+            </button>
+          ))}
+        </div>
+
         {/* Proje Kartları */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 justify-center">
-          {projects.map((project, index) => (
-            <ProjectCard key={index} {...project} />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {filteredProjects.map((project, index) => (
+            <div key={index} className="bg-white p-2 rounded-lg shadow-md hover:shadow-lg transition duration-300">
+              <h3 className="text-l font-bold text-gray-900">{project.title}</h3>
+              <p className="text-gray-700 my-2">{project.description}</p>
+
+              {/* Live Demo */}
+              {project.liveDemo ? (
+               <iframe
+               src={project.liveDemo}
+               className="w-full h-[450px] border rounded-lg my-3"
+               sandbox="allow-same-origin allow-scripts"
+             ></iframe>
+             
+              ) : (
+                <p className="text-gray-500 text-sm italic my-2">Live demo mevcut değil</p>
+              )}
+
+              {/* Linkler */}
+              <div className="flex gap-3 mt-4">
+                <a
+                  href={project.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 bg-gray-800 text-white py-2 rounded-md text-center text-sm hover:bg-gray-900 transition"
+                >
+                  GitHub
+                </a>
+
+                {project.liveDemo ? (
+                  <a
+                    href={project.liveDemo}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 bg-blue-600 text-white py-2 rounded-md text-center text-sm hover:bg-blue-700 transition"
+                  >
+                    Live Demo
+                  </a>
+                ) : (
+                  <span className="flex-1 text-gray-500 py-2 rounded-md text-center text-sm border border-gray-300 cursor-not-allowed">
+                    No Demo
+                  </span>
+                )}
+              </div>
+            </div>
           ))}
         </div>
       </div>
