@@ -1,21 +1,25 @@
+
 "use client";
+
 import React, { useState } from "react";
+import Image from "next/image";
 
 const allProjects = [
   {
     title: "Professional Portfolio | Built with Next.js & React",
     description: "A professional portfolio website crafted using Next.js and React.",
-    link: "https://github.com/BeydaNurPinarbasi/my-portfolio",
+    github: "https://github.com/BeydaNurPinarbasi/my-portfolio",
     liveDemo: "https://beyda.dev",
     category: "Web",
   },
   {
-    title: "React Native Search",
-    description: "React Native ile geliştirdiğim arama uygulaması.",
-    link: "https://github.com/beydanp/react-native-search",
-    liveDemo: "", 
-    category: "Mobile",
-  },
+    title: "Find Your Stay | Map-Based Hotel Finder",
+    description: "Discover hotels in different cities and view their locations on the map.",
+    github: "https://github.com/BeydaNurPinarbasi/Otel_Project",
+    liveDemo: null,
+    images: ["/Otelproject1.png", "/Otelproject2.png"],
+    category: "Mobile"
+  }
 ];
 
 const categories = ["All", "Web", "Mobile"];
@@ -60,14 +64,30 @@ export default function ProjectsPage() {
               <h3 className="text-l font-bold text-gray-900">{project.title}</h3>
               <p className="text-gray-700 my-2">{project.description}</p>
 
+              {/* Resimler */}
+              {project.images && project.images.length > 0 && (
+                <div className="flex gap-2 overflow-x-auto">
+                  {project.images.map((imgSrc, idx) => (
+                   <Image
+                   key={idx}
+                   src={imgSrc}
+                   alt={`Project image ${idx + 1}`}
+                   className="w-[400px] h-[400px] object-cover rounded-lg"
+                   height={250}
+                   width={400}
+                 />
+                 
+                  ))}
+                </div>
+              )}
+
               {/* Live Demo */}
               {project.liveDemo ? (
-               <iframe
-               src={project.liveDemo}
-               className="w-full h-[450px] border rounded-lg my-3"
-               sandbox="allow-same-origin allow-scripts"
-             ></iframe>
-             
+                <iframe
+                  src={project.liveDemo}
+                  className="w-full h-[450px] border rounded-lg my-3"
+                  sandbox="allow-same-origin allow-scripts allow-popups allow-top-navigation"
+                ></iframe>
               ) : (
                 <p className="text-gray-500 text-sm italic my-2">Live demo mevcut değil</p>
               )}
@@ -75,7 +95,7 @@ export default function ProjectsPage() {
               {/* Linkler */}
               <div className="flex gap-3 mt-4">
                 <a
-                  href={project.link}
+                  href={project.github}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex-1 bg-gray-800 text-white py-2 rounded-md text-center text-sm hover:bg-gray-900 transition"
