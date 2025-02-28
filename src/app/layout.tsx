@@ -8,7 +8,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className=" bg-gray-100 flex flex-col min-h-screen">
         <Navbar />
         <main className="min-h-screen container mx-auto p-4 flex-grow">{children}</main>
-        <Footer /> {/* Footer buraya eklendi */}
+        <Footer /> 
       </body>
     </html>
   );
