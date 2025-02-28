@@ -21,7 +21,7 @@ const Contact: React.FC = () => {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, message }),
+        body: JSON.stringify({ name, email, phone, message }),
       });
 
       const data = await res.json();
@@ -29,6 +29,7 @@ const Contact: React.FC = () => {
         setResponseMsg("Mesajınız başarıyla gönderildi!");
         setName("");
         setEmail("");
+        setPhone("");
         setMessage("");
       } else {
         setResponseMsg(data.error || "Mesaj gönderilirken bir hata oluştu.");
