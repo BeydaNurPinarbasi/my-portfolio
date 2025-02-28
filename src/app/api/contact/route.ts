@@ -3,9 +3,9 @@ import nodemailer from "nodemailer";
 
 export async function POST(req: Request) {
   try {
-    const { name, email, message } = await req.json();
+    const { name, email, phone, message } = await req.json();
 
-    if (!name || !email || !message) {
+    if (!name || !email || !phone || !message) {
       return NextResponse.json({ error: "Lütfen tüm alanları doldurun." }, { status: 400 });
     }
 
@@ -19,9 +19,9 @@ export async function POST(req: Request) {
 
     const mailOptions = {
       from: process.env.EMAIL_USER,
-      to: "beydanur.pinarbasi@gmail.com", 
+      to: "beydanur.pinarbasi@gmail.com",
       subject: `beyda.dev sitenden mesaj var - ${name}`,
-      text: `Gönderen: ${name} (${email})\n\nMesaj:\n${message}`,
+      text: `Gönderen: ${name} (${email})\nTelefon: ${phone}\n\nMesaj:\n${message}`,
     };
 
     await transporter.sendMail(mailOptions);
@@ -31,5 +31,4 @@ export async function POST(req: Request) {
     console.error("E-posta gönderme hatası:", error);
     return NextResponse.json({ error: "E-posta gönderme başarısız." }, { status: 500 });
   }
-  
 }
