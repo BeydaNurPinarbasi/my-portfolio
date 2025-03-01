@@ -3,6 +3,8 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
+import GitHubCalendar from "react-github-calendar";
+
 
 const allProjects = [
   {
@@ -39,6 +41,7 @@ export default function ProjectsPage() {
         <p className="text-lg text-gray-700 mb-8">
           İşte geliştirdiğim bazı projeler. Daha fazla detay için GitHub&apos;ımı ziyaret edebilirsin! 🚀
         </p>
+       
 
         {/* Kategoriler */}
         <div className="flex justify-center gap-4 mb-8">
@@ -117,11 +120,24 @@ export default function ProjectsPage() {
                     No Demo
                   </span>
                 )}
+
+                
               </div>
             </div>
           ))}
+          
+        </div>
+          {/* GitHub Takvim */}
+          <div className="mb-10">
+          <div className="border-b-2 border-gray-200 mb-6"></div>
+          <div></div>
+          <h3 className="text-2xl font-semibold mb-4">GitHub Contribution History</h3>
+          <div className="flex justify-center">
+            <GitHubCalendar username="BeydaNurPinarbasi" colorScheme="light" />
+          </div>
         </div>
       </div>
+      
     </section>
   );
 }
