@@ -4,9 +4,10 @@ import { motion } from "framer-motion";
 import {
   FaInstagram,
   FaLinkedin,
-  FaDownload,
   FaEnvelope,
 } from "react-icons/fa";
+import TypingAnimation from "./components/TypingAnimation";
+import ScrollReveal from "./components/ScrollReveal";
 
 export default function Home() {
   return (
@@ -27,8 +28,7 @@ export default function Home() {
           WebkitFilter: "blur(2px)",
         }}
       >
-        {/* Buraya ekleyebilirsin */}
-        <div className="absolute inset-0 bg-gray-50 bg-opacity-55"></div>
+        <div className="absolute inset-0 bg-gray-50 dark:bg-gray-900 bg-opacity-55 dark:bg-opacity-75 transition-colors duration-300"></div>
       </div>
 
       {/* İçerik */}
@@ -41,55 +41,60 @@ export default function Home() {
         >
           <motion.div whileTap={{ rotateY: 180 }}>
             <Image
-              src="/profil-foto.jpeg"
+              src="/profile.jpg"
               alt="Beyda Nur Pınarbaşı"
               width={250}
               height={250}
-              className="shadow-lg rounded-lg md:w-[400px] md:h-[400px] mt-6 md:mt-0"
+              className="shadow-lg rounded-lg w-[200px] h-[200px] sm:w-[250px] sm:h-[250px] md:w-[400px] md:h-[400px] mt-6 md:mt-0"
             />
           </motion.div>
         </motion.div>
 
         {/* Yazılar */}
         <div className="text-left max-w-md md:max-w-2xl">
-          <div className="flex items-center gap-4">
-            <h2 className="text-3xl md:text-5xl font-serif text-black">
+          <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
+            <h2 className="text-2xl sm:text-3xl md:text-5xl font-serif text-black dark:text-white">
               {" "}
               Merhaba ben{" "}
             </h2>
-            <h2 className="text-5xl font-extrabold bg-gradient-to-r from-purple-400 to-blue-500 inline-block text-transparent bg-clip-text drop-shadow-lg">
-              Beyda Nur
+            <h2 className="text-2xl sm:text-3xl md:text-5xl font-extrabold bg-gradient-to-r from-purple-400 to-blue-500 inline-block text-transparent bg-clip-text drop-shadow-lg">
+              <TypingAnimation 
+                words={["Beyda Nur", "iOS Developer", "Backend Developer", "Full Stack"]}
+                className="inline-block"
+              />
             </h2>
           </div>
 
-          <p className="text-lg font-serif font-medium text-black">
-          💻iOS & Backend Developer | React, React Native ile modern teknolojilerle projeler geliştiriyorum.
-</p>
+          <ScrollReveal>
+            <p className="text-lg font-serif font-medium text-black dark:text-gray-300">
+              💻iOS & Backend Developer | React, React Native ile modern teknolojilerle projeler geliştiriyorum.
+            </p>
+          </ScrollReveal>
 
-          
-          <p className="mt-4 text-md font-serif text-black italic">
-            “Her gün yeni bir satır kod, yeni bir macera!” ☕
-          </p>
+          <ScrollReveal delay={0.2}>
+            <p className="mt-4 text-md font-serif text-black dark:text-gray-300 italic">
+              "Her gün yeni bir satır kod, yeni bir macera!" ☕
+            </p>
+          </ScrollReveal>
 
           {/* Yetenekler */}
           <div className="mt-6 space-y-6">
-            <div>
-              
-            </div>
-            <div>
-              <p className="text-black font-serif">
-                Çeşitli kurumlarda mentorluk yaparak öğrencilere rehberlik
-                ediyorum.
-              </p>
-              
-            </div>
-            <div>
-             
-              <p className="text-black font-serif">
-                Modern frontend teknolojileri ile dinamik ve performanslı mobil
-                uygulamalar geliştiriyorum.
-              </p>
-            </div>
+            <ScrollReveal delay={0.3}>
+              <div>
+                <p className="text-black dark:text-gray-300 font-serif">
+                  Çeşitli kurumlarda mentorluk yaparak öğrencilere rehberlik
+                  ediyorum.
+                </p>
+              </div>
+            </ScrollReveal>
+            <ScrollReveal delay={0.4}>
+              <div>
+                <p className="text-black dark:text-gray-300 font-serif">
+                  Modern frontend teknolojileri ile dinamik ve performanslı mobil
+                  uygulamalar geliştiriyorum.
+                </p>
+              </div>
+            </ScrollReveal>
           </div>
           <div className="mt-6 flex flex-wrap justify-start space-x-4 space-y-4 md:space-y-0">
             <a
@@ -97,19 +102,6 @@ export default function Home() {
               className="bg-gradient-to-r from-purple-600 to-blue-500 px-6 py-3 rounded-lg text-white font-semibold hover:shadow-lg transition-all duration-300"
             >
               📩 Benimle İletişime Geç
-            </a>
-            <a
-              href="/projects"
-              className="border border-gray-700 text-black px-6 py-3 rounded-lg hover:bg-gradient-to-r from-purple-700 to-blue-600 hover:text-white transition-all duration-300 flex items-center"
-            >
-              🚀 Projelerimi Keşfet
-            </a>
-            <a
-              href="/Beyda_Nur_Pinarbasi_CV.pdf"
-              download
-              className="border border-gray-700 text-black px-6 py-3 rounded-lg hover:bg-gradient-to-r from-purple-700 to-blue-600 hover:text-white transition-all duration-300 flex items-center"
-            >
-              <FaDownload className="mr-2 text-lg" /> CV ’mi İndir
             </a>
           </div>
 

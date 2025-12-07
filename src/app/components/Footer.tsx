@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="bg-zinc-950 text-white py-10 ">
+    <footer className="bg-zinc-950 dark:bg-gray-900 text-white py-10 transition-colors duration-300">
       <div className="container mx-auto px-6 grid md:grid-cols-3 gap-8 text-center md:text-left">
         {/* Sol - Hakkımda */}
         <div>
@@ -17,7 +17,6 @@ export default function Footer() {
           <ul className="space-y-2">
             <li><Link href="/" className="hover:text-purple-400">Ana Sayfa</Link></li>
             <li><Link href="/about" className="hover:text-purple-400">Hakkımda</Link></li>
-            <li><Link href="/projects" className="hover:text-purple-400">Projeler</Link></li>
             <li><Link href="/contact" className="hover:text-purple-400">İletişim</Link></li>
           </ul>
         </div>

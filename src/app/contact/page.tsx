@@ -52,7 +52,7 @@ const Contact: React.FC = () => {
         className="fixed inset-0 bg-cover bg-center"
         style={{ backgroundImage: "url('/Wallpaper_Nasa.jpeg')" }}
       />
-      <div className="fixed inset-0 bg-opacity-60"></div>
+      <div className="fixed inset-0 bg-black bg-opacity-60 dark:bg-opacity-70 transition-opacity duration-300"></div>
 
       {/* İçerik */}
       <div className="relative z-10 max-w-4xl mx-auto text-center text-white p-6">
@@ -77,7 +77,7 @@ const Contact: React.FC = () => {
         {/* Form */}
         <form 
           onSubmit={handleSubmit} 
-          className="w-full sm:max-w-md mx-auto bg-white bg-opacity-20 p-6 sm:p-8 rounded-xl shadow-xl backdrop-blur-xs"
+          className="w-full sm:max-w-md mx-auto bg-white dark:bg-gray-800 bg-opacity-20 dark:bg-opacity-30 p-6 sm:p-8 rounded-xl shadow-xl backdrop-blur-xs"
         >
           <div className="mb-4 text-left">
             <label htmlFor="name" className="block text-sm sm:text-lg font-medium">Adınız</label>
@@ -88,7 +88,7 @@ const Contact: React.FC = () => {
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-3 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 placeholder-gray-500"
+              className="w-full px-4 py-3 mt-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 dark:text-white dark:bg-gray-700 placeholder-gray-500 dark:placeholder-gray-400"
               placeholder="Adınızı girin"
               required
             />
@@ -103,7 +103,7 @@ const Contact: React.FC = () => {
             id="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-3 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base text-gray-900 placeholder-gray-500"
+            className="w-full px-4 py-3 mt-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base text-gray-900 dark:text-white dark:bg-gray-700 placeholder-gray-500 dark:placeholder-gray-400"
             placeholder="E-mail adresinizi girin"
             required
           />
@@ -120,7 +120,7 @@ const Contact: React.FC = () => {
     id="phone"
     value={phone}
     onChange={(e) => setPhone(e.target.value)}
-    className="w-full px-4 py-3 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base text-gray-900 placeholder-gray-500"
+    className="w-full px-4 py-3 mt-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base text-gray-900 dark:text-white dark:bg-gray-700 placeholder-gray-500 dark:placeholder-gray-400"
     placeholder="Telefon numaranızı girin"
     required
   />
@@ -132,7 +132,7 @@ const Contact: React.FC = () => {
             id="message"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            className="w-full px-4 py-3 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base text-gray-900 placeholder-gray-500"
+            className="w-full px-4 py-3 mt-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base text-gray-900 dark:text-white dark:bg-gray-700 placeholder-gray-500 dark:placeholder-gray-400"
             placeholder="Mesajınızı yazın..."
             rows={4}
             required
