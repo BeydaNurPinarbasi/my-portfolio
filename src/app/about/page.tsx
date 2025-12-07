@@ -152,10 +152,10 @@ const About: React.FC = () => {
         </div>
       </div>
 
-      <div className="relative max-w-5xl mx-auto mt-20 z-10">
+      <div className="relative max-w-5xl mx-auto mt-12 z-10">
         <ScrollReveal>
-          <h3 className="text-4xl font-bold text-gray-900 dark:text-white mb-12 drop-shadow-lg text-center">Experience & Education</h3>
-          <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-8 rounded-xl shadow-lg">
+          <h3 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-8 drop-shadow-lg text-center">Experience & Education</h3>
+          <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl shadow-lg">
             <Timeline items={timelineData} />
           </div>
         </ScrollReveal>

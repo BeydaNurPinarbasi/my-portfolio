@@ -1,6 +1,7 @@
 "use client";
-import { motion } from "framer-motion";
-import { FaBriefcase, FaGraduationCap, FaMapMarkerAlt, FaCalendarAlt } from "react-icons/fa";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { FaBriefcase, FaGraduationCap, FaMapMarkerAlt, FaCalendarAlt, FaChevronDown, FaChevronUp } from "react-icons/fa";
 
 interface TimelineItem {
   type: "work" | "education";
@@ -15,23 +16,36 @@ interface TimelineProps {
 }
 
 export default function Timeline({ items }: TimelineProps) {
+  const [openItems, setOpenItems] = useState<Set<number>>(new Set());
+
+  const toggleItem = (index: number) => {
+    const newOpenItems = new Set(openItems);
+    if (newOpenItems.has(index)) {
+      newOpenItems.delete(index);
+    } else {
+      newOpenItems.add(index);
+    }
+    setOpenItems(newOpenItems);
+  };
+
   return (
-    <div className="relative py-8">
+    <div className="relative py-4">
       {/* Vertical Line - Gradient */}
       <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-0.5 sm:w-1 bg-gradient-to-b from-purple-500 via-blue-500 to-purple-500 dark:from-purple-400 dark:via-blue-400 dark:to-purple-400 transform md:-translate-x-1/2 opacity-30"></div>
 
-      <div className="space-y-12 sm:space-y-16">
+      <div className="space-y-4 sm:space-y-5">
         {items.map((item, index) => {
           const isEven = index % 2 === 0;
           const isWork = item.type === "work";
+          const isOpen = openItems.has(index);
           
           return (
             <motion.div
               key={index}
-              initial={{ opacity: 0, y: 50 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.6, delay: index * 0.15 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ duration: 0.4, delay: index * 0.1 }}
               className={`relative flex flex-col md:flex-row items-center ${
                 isEven ? "md:flex-row-reverse" : ""
               }`}
@@ -39,7 +53,7 @@ export default function Timeline({ items }: TimelineProps) {
               {/* Content Card */}
               <div className={`w-full md:w-5/12 ${isEven ? "md:pr-8" : "md:pl-8"} relative z-10 pl-12 md:pl-0`}>
                 <motion.div
-                  whileHover={{ scale: 1.02, y: -5 }}
+                  whileHover={{ scale: 1.01 }}
                   className="relative group"
                 >
                   {/* Gradient Background */}
@@ -47,67 +61,101 @@ export default function Timeline({ items }: TimelineProps) {
                     isWork 
                       ? "from-purple-500/20 to-blue-500/20 dark:from-purple-500/30 dark:to-blue-500/30" 
                       : "from-blue-500/20 to-cyan-500/20 dark:from-blue-500/30 dark:to-cyan-500/30"
-                  } rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300`}></div>
+                  } rounded-xl blur-xl group-hover:blur-2xl transition-all duration-300`}></div>
                   
                   {/* Card */}
-                  <div className="relative bg-white dark:bg-gray-800 rounded-2xl p-4 sm:p-6 md:p-8 shadow-xl border border-gray-200 dark:border-gray-700 hover:shadow-2xl transition-all duration-300 overflow-hidden">
+                  <div className="relative bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer" onClick={() => toggleItem(index)}>
                     {/* Decorative Corner */}
-                    <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${
+                    <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${
                       isWork 
                         ? "from-purple-500/10 to-transparent" 
                         : "from-blue-500/10 to-transparent"
                     } rounded-bl-full`}></div>
                     
-                    {/* Badge */}
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className={`p-3 rounded-xl ${
-                        isWork 
-                          ? "bg-gradient-to-br from-purple-500 to-blue-500" 
-                          : "bg-gradient-to-br from-blue-500 to-cyan-500"
-                      } shadow-lg`}>
-                        {isWork ? (
-                          <FaBriefcase className="text-white text-xl" />
-                        ) : (
-                          <FaGraduationCap className="text-white text-xl" />
-                        )}
+                    {/* Card Header - Always Visible */}
+                    <div className="p-4 sm:p-5">
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1">
+                          {/* Badge */}
+                          <div className="flex items-center gap-2 mb-2">
+                            <div className={`p-1.5 rounded-lg ${
+                              isWork 
+                                ? "bg-gradient-to-br from-purple-500 to-blue-500" 
+                                : "bg-gradient-to-br from-blue-500 to-cyan-500"
+                            } shadow-md`}>
+                              {isWork ? (
+                                <FaBriefcase className="text-white text-xs" />
+                              ) : (
+                                <FaGraduationCap className="text-white text-xs" />
+                              )}
+                            </div>
+                            <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${
+                              isWork 
+                                ? "bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300" 
+                                : "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300"
+                            }`}>
+                              {isWork ? "İş Deneyimi" : "Eğitim"}
+                            </span>
+                          </div>
+
+                          {/* Title */}
+                          <h3 className="text-base sm:text-lg font-bold text-gray-900 dark:text-white mb-1.5">
+                            {item.title}
+                          </h3>
+
+                          {/* Organization */}
+                          <div className="flex items-start gap-1.5 mb-1.5">
+                            <FaMapMarkerAlt className="text-purple-500 dark:text-purple-400 text-xs mt-0.5 flex-shrink-0" />
+                            <p className="text-sm font-semibold text-purple-600 dark:text-purple-400 break-words">
+                              {item.organization}
+                            </p>
+                          </div>
+
+                          {/* Period */}
+                          <div className="flex items-center gap-1.5">
+                            <FaCalendarAlt className="text-gray-400 dark:text-gray-500 text-xs flex-shrink-0" />
+                            <p className="text-xs font-medium text-gray-600 dark:text-gray-400">
+                              {item.period}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Chevron Icon */}
+                        <motion.div
+                          animate={{ rotate: isOpen ? 180 : 0 }}
+                          transition={{ duration: 0.3 }}
+                          className="flex-shrink-0 mt-1"
+                        >
+                          {isOpen ? (
+                            <FaChevronUp className="text-gray-400 dark:text-gray-500 text-sm" />
+                          ) : (
+                            <FaChevronDown className="text-gray-400 dark:text-gray-500 text-sm" />
+                          )}
+                        </motion.div>
                       </div>
-                      <span className={`px-4 py-1.5 rounded-full text-xs font-semibold ${
-                        isWork 
-                          ? "bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300" 
-                          : "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300"
-                      }`}>
-                        {isWork ? "İş Deneyimi" : "Eğitim"}
-                      </span>
                     </div>
 
-                    {/* Title */}
-                    <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-purple-600 group-hover:to-blue-600 transition-all duration-300">
-                      {item.title}
-                    </h3>
-
-                    {/* Organization */}
-                    <div className="flex items-start gap-2 mb-3">
-                      <FaMapMarkerAlt className="text-purple-500 dark:text-purple-400 text-sm mt-1 flex-shrink-0" />
-                      <p className="text-base sm:text-lg font-semibold text-purple-600 dark:text-purple-400 break-words">
-                        {item.organization}
-                      </p>
-                    </div>
-
-                    {/* Period */}
-                    <div className="flex items-center gap-2 mb-4">
-                      <FaCalendarAlt className="text-gray-400 dark:text-gray-500 text-sm flex-shrink-0" />
-                      <p className="text-xs sm:text-sm font-medium text-gray-600 dark:text-gray-400">
-                        {item.period}
-                      </p>
-                    </div>
-
-                    {/* Description */}
-                    <p className="text-sm sm:text-base text-gray-700 dark:text-gray-300 leading-relaxed">
-                      {item.description}
-                    </p>
+                    {/* Description - Collapsible */}
+                    <AnimatePresence>
+                      {isOpen && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          transition={{ duration: 0.3 }}
+                          className="overflow-hidden"
+                        >
+                          <div className="px-4 sm:px-5 pb-4 sm:pb-5 pt-0 border-t border-gray-200 dark:border-gray-700">
+                            <p className="text-xs sm:text-sm text-gray-700 dark:text-gray-300 leading-relaxed pt-3">
+                              {item.description}
+                            </p>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
 
                     {/* Bottom Accent Line */}
-                    <div className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${
+                    <div className={`absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r ${
                       isWork 
                         ? "from-purple-500 to-blue-500" 
                         : "from-blue-500 to-cyan-500"
@@ -122,8 +170,8 @@ export default function Timeline({ items }: TimelineProps) {
               {/* Timeline Dot - Always visible */}
               <div className="absolute left-8 md:left-1/2 transform md:-translate-x-1/2 -translate-y-1/2 top-1/2 z-20">
                 <motion.div
-                  whileHover={{ scale: 1.3 }}
-                  className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full border-2 sm:border-4 border-white dark:border-gray-900 shadow-xl ${
+                  whileHover={{ scale: 1.2 }}
+                  className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 border-white dark:border-gray-900 shadow-lg ${
                     isWork 
                       ? "bg-gradient-to-r from-purple-500 to-blue-500" 
                       : "bg-gradient-to-r from-blue-500 to-cyan-500"
