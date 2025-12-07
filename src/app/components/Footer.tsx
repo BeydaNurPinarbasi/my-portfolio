@@ -17,6 +17,7 @@ export default function Footer() {
           <ul className="space-y-2">
             <li><Link href="/" className="hover:text-purple-400">Ana Sayfa</Link></li>
             <li><Link href="/about" className="hover:text-purple-400">Hakkımda</Link></li>
+            <li><Link href="/projects" className="hover:text-purple-400">Projeler</Link></li>
             <li><Link href="/contact" className="hover:text-purple-400">İletişim</Link></li>
           </ul>
         </div>

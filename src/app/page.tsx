@@ -5,6 +5,10 @@ import {
   FaInstagram,
   FaLinkedin,
   FaEnvelope,
+  FaCode,
+  FaProjectDiagram,
+  FaUsers,
+  FaAward,
 } from "react-icons/fa";
 import TypingAnimation from "./components/TypingAnimation";
 import ScrollReveal from "./components/ScrollReveal";
@@ -73,7 +77,7 @@ export default function Home() {
 
           <ScrollReveal delay={0.2}>
             <p className="mt-4 text-md font-serif text-black dark:text-gray-300 italic">
-              "Her gün yeni bir satır kod, yeni bir macera!" ☕
+              &ldquo;Her gün yeni bir satır kod, yeni bir macera!&rdquo; ☕
             </p>
           </ScrollReveal>
 
@@ -102,6 +106,19 @@ export default function Home() {
               className="bg-gradient-to-r from-purple-600 to-blue-500 px-6 py-3 rounded-lg text-white font-semibold hover:shadow-lg transition-all duration-300"
             >
               📩 Benimle İletişime Geç
+            </a>
+            <a
+              href="/Beyda_Nur_Pinarbasi_CV.pdf"
+              download
+              className="bg-gradient-to-r from-gray-700 to-gray-900 px-6 py-3 rounded-lg text-white font-semibold hover:shadow-lg transition-all duration-300 flex items-center gap-2"
+            >
+              📄 CV İndir
+            </a>
+            <a
+              href="/projects"
+              className="bg-gradient-to-r from-blue-600 to-purple-500 px-6 py-3 rounded-lg text-white font-semibold hover:shadow-lg transition-all duration-300"
+            >
+              🚀 Projelerim
             </a>
           </div>
 
@@ -133,6 +150,63 @@ export default function Home() {
               </a>
             ))}
           </div>
+        </div>
+      </div>
+
+      {/* İstatistikler Bölümü */}
+      <div className="relative z-10 w-full max-w-6xl mx-auto mt-20 mb-20 px-4">
+        <ScrollReveal>
+          <h3 className="text-3xl md:text-4xl font-bold text-center mb-12 text-black dark:text-white">
+            İstatistiklerim
+          </h3>
+        </ScrollReveal>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+          {[
+            {
+              icon: FaProjectDiagram,
+              number: "50+",
+              label: "Tamamlanan Proje",
+              color: "from-purple-500 to-purple-700",
+            },
+            {
+              icon: FaCode,
+              number: "3+",
+              label: "Yıl Deneyim",
+              color: "from-blue-500 to-blue-700",
+            },
+            {
+              icon: FaUsers,
+              number: "10+",
+              label: "Mentorluk Yapılan Öğrenci",
+              color: "from-green-500 to-green-700",
+            },
+            {
+              icon: FaAward,
+              number: "100%",
+              label: "Müşteri Memnuniyeti",
+              color: "from-orange-500 to-orange-700",
+            },
+          ].map((stat, index) => {
+            const Icon = stat.icon;
+            return (
+              <ScrollReveal key={index} delay={index * 0.1}>
+                <motion.div
+                  whileHover={{ scale: 1.05, y: -5 }}
+                  className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl shadow-lg text-center border border-gray-200 dark:border-gray-700"
+                >
+                  <div className={`inline-flex p-4 rounded-full bg-gradient-to-r ${stat.color} mb-4`}>
+                    <Icon className="text-white text-2xl" />
+                  </div>
+                  <h4 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2">
+                    {stat.number}
+                  </h4>
+                  <p className="text-sm md:text-base text-gray-600 dark:text-gray-300">
+                    {stat.label}
+                  </p>
+                </motion.div>
+              </ScrollReveal>
+            );
+          })}
         </div>
       </div>
     </div>
