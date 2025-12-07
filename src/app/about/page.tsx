@@ -118,7 +118,7 @@ const About: React.FC = () => {
           <div className="text-center md:text-left">
             <h2 className="text-5xl font-extrabold mb-6 bg-gradient-to-r from-purple-400 to-blue-500 inline-block text-transparent bg-clip-text drop-shadow-lg">About Me</h2>
             <p className="text-lg mb-8 leading-relaxed text-gray-900 dark:text-gray-100 drop-shadow-md">
-              Merhaba, ben Beyda Nur Pınarbaşı. iOS ve Backend Developer olarak kariyerime devam ediyorum. Şu anda <span className="text-purple-400 dark:text-purple-300 font-semibold">Astro Dijital Yazılım</span>&apos;de aktif olarak çalışıyorum. 
+              Merhaba, ben Beyda Nur Pınarbaşı. iOS ve Backend Developer olarak kariyerime devam ediyorum. Şu anda <span className="text-purple-400 dark:text-purple-300 font-semibold">Astro Dijital Yazılım</span>&apos;da aktif olarak çalışıyorum. 
                Mentorluk yapıyorum ve çeşitli organizasyonlarda bilgi paylaşımında bulunuyorum bu sayede yeni yeteneklerin gelişimine katkı sağlamaktan büyük keyif alıyorum.
             </p>
           </div>
