@@ -31,7 +31,7 @@ export default function Timeline({ items }: TimelineProps) {
   return (
     <div className="relative py-4">
       {/* Vertical Line - Gradient */}
-      <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-0.5 sm:w-1 bg-gradient-to-b from-purple-500 via-blue-500 to-purple-500 dark:from-purple-400 dark:via-blue-400 dark:to-purple-400 transform md:-translate-x-1/2 opacity-30"></div>
+      <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-0.5 sm:w-1 bg-gradient-to-b from-slate-400 via-slate-600 to-slate-400 dark:from-slate-500 dark:via-slate-700 dark:to-slate-500 transform md:-translate-x-1/2 opacity-40"></div>
 
       <div className="space-y-4 sm:space-y-5">
         {items.map((item, index) => {
@@ -59,8 +59,8 @@ export default function Timeline({ items }: TimelineProps) {
                   {/* Gradient Background */}
                   <div className={`absolute inset-0 bg-gradient-to-r ${
                     isWork 
-                      ? "from-purple-500/20 to-blue-500/20 dark:from-purple-500/30 dark:to-blue-500/30" 
-                      : "from-blue-500/20 to-cyan-500/20 dark:from-blue-500/30 dark:to-cyan-500/30"
+                      ? "from-slate-500/20 to-slate-700/20 dark:from-slate-600/30 dark:to-slate-800/30" 
+                      : "from-slate-400/20 to-slate-600/20 dark:from-slate-500/30 dark:to-slate-700/30"
                   } rounded-xl blur-xl group-hover:blur-2xl transition-all duration-300`}></div>
                   
                   {/* Card */}
@@ -68,8 +68,8 @@ export default function Timeline({ items }: TimelineProps) {
                     {/* Decorative Corner */}
                     <div className={`absolute top-0 right-0 w-24 h-24 bg-gradient-to-br ${
                       isWork 
-                        ? "from-purple-500/10 to-transparent" 
-                        : "from-blue-500/10 to-transparent"
+                        ? "from-slate-500/10 to-transparent" 
+                        : "from-slate-400/10 to-transparent"
                     } rounded-bl-full`}></div>
                     
                     {/* Card Header - Always Visible */}
@@ -80,8 +80,8 @@ export default function Timeline({ items }: TimelineProps) {
                           <div className="flex items-center gap-2 mb-2">
                             <div className={`p-1.5 rounded-lg ${
                               isWork 
-                                ? "bg-gradient-to-br from-purple-500 to-blue-500" 
-                                : "bg-gradient-to-br from-blue-500 to-cyan-500"
+                                ? "bg-gradient-to-br from-slate-600 to-slate-800" 
+                                : "bg-gradient-to-br from-slate-500 to-slate-700"
                             } shadow-md`}>
                               {isWork ? (
                                 <FaBriefcase className="text-white text-xs" />
@@ -91,8 +91,8 @@ export default function Timeline({ items }: TimelineProps) {
                             </div>
                             <span className={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${
                               isWork 
-                                ? "bg-purple-100 dark:bg-purple-900/50 text-purple-700 dark:text-purple-300" 
-                                : "bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300"
+                                ? "bg-slate-100 dark:bg-slate-900/50 text-slate-700 dark:text-slate-300" 
+                                : "bg-slate-100 dark:bg-slate-900/50 text-slate-700 dark:text-slate-300"
                             }`}>
                               {isWork ? "İş Deneyimi" : "Eğitim"}
                             </span>
@@ -105,8 +105,8 @@ export default function Timeline({ items }: TimelineProps) {
 
                           {/* Organization */}
                           <div className="flex items-start gap-1.5 mb-1.5">
-                            <FaMapMarkerAlt className="text-purple-500 dark:text-purple-400 text-xs mt-0.5 flex-shrink-0" />
-                            <p className="text-sm font-semibold text-purple-600 dark:text-purple-400 break-words">
+                            <FaMapMarkerAlt className="text-slate-500 dark:text-slate-400 text-xs mt-0.5 flex-shrink-0" />
+                            <p className="text-sm font-semibold text-slate-600 dark:text-slate-400 break-words">
                               {item.organization}
                             </p>
                           </div>
@@ -157,8 +157,8 @@ export default function Timeline({ items }: TimelineProps) {
                     {/* Bottom Accent Line */}
                     <div className={`absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r ${
                       isWork 
-                        ? "from-purple-500 to-blue-500" 
-                        : "from-blue-500 to-cyan-500"
+                        ? "from-slate-600 to-slate-800" 
+                        : "from-slate-500 to-slate-700"
                     }`}></div>
                   </div>
                 </motion.div>
@@ -173,8 +173,8 @@ export default function Timeline({ items }: TimelineProps) {
                   whileHover={{ scale: 1.2 }}
                   className={`w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 border-white dark:border-gray-900 shadow-lg ${
                     isWork 
-                      ? "bg-gradient-to-r from-purple-500 to-blue-500" 
-                      : "bg-gradient-to-r from-blue-500 to-cyan-500"
+                      ? "bg-gradient-to-r from-slate-600 to-slate-800" 
+                      : "bg-gradient-to-r from-slate-500 to-slate-700"
                   }`}
                 ></motion.div>
               </div>

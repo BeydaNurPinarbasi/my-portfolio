@@ -143,7 +143,7 @@ const Contact: React.FC = () => {
 
           <button
             type="submit"
-            className="w-full py-3 px-6 bg-gradient-to-r from-purple-400 to-blue-500 text-white text-sm sm:text-lg rounded-lg hover:bg-blue-600 transition-all"
+            className="w-full py-3 px-6 bg-slate-900 dark:bg-slate-800 text-white text-sm sm:text-lg rounded-lg hover:bg-slate-800 dark:hover:bg-slate-700 transition-all"
             disabled={loading}
           >
             {loading ? "Gönderiliyor..." : "Mesaj Gönder"}
@@ -192,7 +192,7 @@ const Contact: React.FC = () => {
             href="https://www.instagram.com/cekununzamani/" 
             target="_blank" 
             rel="noopener noreferrer" 
-            className="text-2xl hover:text-pink-400"
+            className="text-2xl hover:text-slate-400"
             whileHover={{ y: -5 }}
             transition={{ type: "spring", stiffness: 300 }}
           >

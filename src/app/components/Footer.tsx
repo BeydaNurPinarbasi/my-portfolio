@@ -15,10 +15,10 @@ export default function Footer() {
         <div>
           <h3 className="text-lg font-semibold mb-3">Bağlantılar</h3>
           <ul className="space-y-2">
-            <li><Link href="/" className="hover:text-purple-400">Ana Sayfa</Link></li>
-            <li><Link href="/about" className="hover:text-purple-400">Hakkımda</Link></li>
-            <li><Link href="/projects" className="hover:text-purple-400">Projeler</Link></li>
-            <li><Link href="/contact" className="hover:text-purple-400">İletişim</Link></li>
+            <li><Link href="/" className="hover:text-slate-400">Ana Sayfa</Link></li>
+            <li><Link href="/about" className="hover:text-slate-400">Hakkımda</Link></li>
+            <li><Link href="/projects" className="hover:text-slate-400">Projeler</Link></li>
+            <li><Link href="/contact" className="hover:text-slate-400">İletişim</Link></li>
           </ul>
         </div>
 
@@ -26,13 +26,13 @@ export default function Footer() {
         <div>
           <h3 className="text-lg font-semibold mb-3">Bana Ulaş</h3>
           <div className="flex justify-center md:justify-start space-x-6">
-            <a href="https://github.com/BeydaNurPinarbasi" target="_blank" className="hover:text-purple-400">
+            <a href="https://github.com/BeydaNurPinarbasi" target="_blank" className="hover:text-slate-400">
               <FaGithub size={24} />
             </a>
-            <a href="https://www.linkedin.com/in/beyda-nur-p%C4%B1narba%C5%9F%C4%B1/" target="_blank" className="hover:text-purple-400">
+            <a href="https://www.linkedin.com/in/beyda-nur-p%C4%B1narba%C5%9F%C4%B1/" target="_blank" className="hover:text-slate-400">
               <FaLinkedin size={24} />
             </a>
-            <a href="mailto:beydanur.pinarbasi@gmail.com" className="hover:text-purple-400">
+            <a href="mailto:beydanur.pinarbasi@gmail.com" className="hover:text-slate-400">
               <FaEnvelope size={24} />
             </a>
           </div>

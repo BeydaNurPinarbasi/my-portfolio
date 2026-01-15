@@ -17,9 +17,9 @@ const skills = [
   { name: "JavaScript", icon: FaJs, bg: "bg-yellow-500 text-black" },
   { name: "TypeScript", icon: SiTypescript, bg: "bg-blue-600 text-white" },
   { name: "C#", icon: TbBrandCSharp, bg: "bg-gray-700 text-white" },
-  { name: ".NET", icon: SiDotnet, bg: "bg-purple-700 text-white" },
+  { name: ".NET", icon: SiDotnet, bg: "bg-slate-700 text-white" },
   { name: "TailwindCSS", icon: SiTailwindcss, bg: "bg-teal-500 text-white" },
-  { name: "Bootstrap", icon: FaBootstrap, bg: "bg-purple-500 text-white" },
+  { name: "Bootstrap", icon: FaBootstrap, bg: "bg-slate-600 text-white" },
   { name: "Next.js", icon: SiNextdotjs, bg: "bg-indigo-700 text-white" },
   { name: "MySQL", icon: SiMysql, bg: "bg-blue-700 text-white" },
   { name: "Git & GitHub", icon: FaGitAlt, bg: "bg-orange-500 text-white" }
@@ -38,7 +38,7 @@ const progressSkills = [
   { name: "React & React Native", percentage: 90, color: "bg-blue-500" },
   { name: "TypeScript", percentage: 85, color: "bg-blue-600" },
   { name: "Next.js", percentage: 80, color: "bg-indigo-600" },
-  { name: "C# & .NET", percentage: 85, color: "bg-purple-600" },
+  { name: "C# & .NET", percentage: 85, color: "bg-slate-600" },
   { name: "JavaScript", percentage: 90, color: "bg-yellow-500" },
   { name: "MySQL", percentage: 75, color: "bg-blue-700" },
 ];
@@ -94,7 +94,7 @@ const About: React.FC = () => {
   };
 
   return (
-    <section id="about" className="py-20 px-6 relative text-white dark:text-gray-100 overflow-hidden">
+    <section id="about" className="py-20 px-6 relative bg-background text-foreground overflow-hidden min-h-screen">
       <Particles
         id="tsparticles"
         init={particlesInit}
@@ -105,7 +105,8 @@ const About: React.FC = () => {
             size: { value: 3 },
             move: { enable: true, speed: 1 },
             shape: { type: "circle" },
-            opacity: { value: 0.5 }
+            opacity: { value: 0.5 },
+            color: { value: "#64748b" }
           },
           interactivity: {
             events: { onHover: { enable: true, mode: "repulse" } },
@@ -116,24 +117,24 @@ const About: React.FC = () => {
       <div className="relative max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center z-10">
         <ScrollReveal>
           <div className="text-center md:text-left">
-            <h2 className="text-5xl font-extrabold mb-6 bg-gradient-to-r from-purple-400 to-blue-500 inline-block text-transparent bg-clip-text drop-shadow-lg">About Me</h2>
-            <p className="text-lg mb-8 leading-relaxed text-gray-900 dark:text-gray-100 drop-shadow-md">
-              Merhaba, ben Beyda Nur Pınarbaşı. iOS ve Backend Developer olarak kariyerime devam ediyorum. Şu anda <span className="text-purple-400 dark:text-purple-300 font-semibold">Astro Dijital Yazılım</span>&apos;da aktif olarak çalışıyorum. 
+            <h2 className="text-5xl font-extrabold mb-6 text-foreground">About Me</h2>
+            <p className="text-lg mb-8 leading-relaxed text-foreground/90">
+              Merhaba, ben Beyda Nur Pınarbaşı. iOS ve Backend Developer olarak kariyerime devam ediyorum. Şu anda <span className="text-slate-600 dark:text-slate-400 font-semibold">Astro Dijital Yazılım</span>&apos;da aktif olarak çalışıyorum. 
                Mentorluk yapıyorum ve çeşitli organizasyonlarda bilgi paylaşımında bulunuyorum bu sayede yeni yeteneklerin gelişimine katkı sağlamaktan büyük keyif alıyorum.
             </p>
           </div>
         </ScrollReveal>
         <ScrollReveal direction="right">
           <div className="flex justify-center">
-            <Image src="/profile.jpg" alt="Beyda Nur Pınarbaşı" width={250} height={250} className="rounded-full shadow-2xl border-4 border-purple-500 dark:border-purple-400 hover:shadow-purple-500 transition-all duration-500 transform hover:scale-105" />
+            <Image src="/profile.jpg" alt="Beyda Nur Pınarbaşı" width={250} height={250} className="rounded-full shadow-2xl border-4 border-slate-500 dark:border-slate-400 hover:shadow-slate-500 transition-all duration-500 transform hover:scale-105" />
           </div>
         </ScrollReveal>
       </div>
       
       <div className="relative max-w-5xl mx-auto mt-16 z-10">
         <ScrollReveal>
-          <h3 className="text-4xl font-bold text-gray-900 dark:text-white mb-8 drop-shadow-lg text-center">Skills Progress</h3>
-          <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-8 rounded-xl shadow-lg">
+          <h3 className="text-4xl font-bold text-foreground mb-8 text-center">Skills Progress</h3>
+          <div className="bg-card/80 backdrop-blur-sm p-8 rounded-xl shadow-lg border border-border">
             <SkillsProgress skills={progressSkills} />
           </div>
         </ScrollReveal>
@@ -141,7 +142,7 @@ const About: React.FC = () => {
 
       <div className="relative max-w-5xl mx-auto text-center mt-16 z-10">
         <ScrollReveal>
-          <h3 className="text-4xl font-bold text-gray-900 dark:text-white mb-6 drop-shadow-lg">My Skills</h3>
+          <h3 className="text-4xl font-bold text-foreground mb-6">My Skills</h3>
         </ScrollReveal>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 md:gap-10 justify-center">
           {skills.map((skill, index) => (
@@ -154,8 +155,8 @@ const About: React.FC = () => {
 
       <div className="relative max-w-5xl mx-auto mt-12 z-10">
         <ScrollReveal>
-          <h3 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-8 drop-shadow-lg text-center">Experience & Education</h3>
-          <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl shadow-lg">
+          <h3 className="text-3xl md:text-4xl font-bold text-foreground mb-8 text-center">Experience & Education</h3>
+          <div className="bg-card/80 backdrop-blur-sm p-6 rounded-xl shadow-lg border border-border">
             <Timeline items={timelineData} />
           </div>
         </ScrollReveal>

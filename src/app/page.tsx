@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   FaInstagram,
@@ -10,12 +11,15 @@ import {
   FaUsers,
   FaAward,
 } from "react-icons/fa";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import TypingAnimation from "./components/TypingAnimation";
 import ScrollReveal from "./components/ScrollReveal";
+import { cn } from "@/lib/utils";
 
 export default function Home() {
   return (
-    <div className="relative min-h-screen flex flex-col items-center text-center mt-10 px-4 md:px-10">
+    <div className="relative min-h-screen flex flex-col items-center text-center mt-20 md:mt-10 px-4 md:px-10">
       {/* Arka Plan */}
       <div
         className="absolute inset-0 bg-cover bg-center"
@@ -32,183 +36,238 @@ export default function Home() {
           WebkitFilter: "blur(2px)",
         }}
       >
-        <div className="absolute inset-0 bg-gray-50 dark:bg-gray-900 bg-opacity-55 dark:bg-opacity-75 transition-colors duration-300"></div>
+        <div className="absolute inset-0 bg-background/60 dark:bg-background/80 transition-colors duration-300"></div>
       </div>
 
       {/* İçerik */}
-      <div className="min-h-screen relative z-10 flex flex-col md:flex-row items-center mt-20 md:mt-10 space-y-6 md:space-x-8 md:space-y-0">
+      <div className="min-h-screen relative z-10 flex flex-col md:flex-row items-center justify-center space-y-8 md:space-x-12 md:space-y-0 py-12">
         {/* Profil Fotoğrafı */}
         <motion.div
-          initial={{ opacity: 0, y: -50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1 }}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8 }}
+          className="flex-shrink-0"
         >
-          <motion.div whileTap={{ rotateY: 180 }}>
-            <Image
-              src="/profile.jpg"
-              alt="Beyda Nur Pınarbaşı"
-              width={250}
-              height={250}
-              className="shadow-lg rounded-lg w-[200px] h-[200px] sm:w-[250px] sm:h-[250px] md:w-[400px] md:h-[400px] mt-6 md:mt-0"
-            />
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-slate-400 to-slate-600 dark:from-slate-600 dark:to-slate-800 rounded-2xl blur-2xl opacity-30 animate-pulse"></div>
+              <Image
+                src="/profile.jpg"
+                alt="Beyda Nur Pınarbaşı"
+                width={300}
+                height={300}
+                className="relative rounded-2xl shadow-2xl border-4 border-background w-[250px] h-[250px] sm:w-[300px] sm:h-[300px] object-cover"
+              />
+            </div>
           </motion.div>
         </motion.div>
 
         {/* Yazılar */}
-        <div className="text-left max-w-md md:max-w-2xl">
-          <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
-            <h2 className="text-2xl sm:text-3xl md:text-5xl font-serif text-black dark:text-white">
-              {" "}
-              Merhaba ben{" "}
-            </h2>
-            <h2 className="text-2xl sm:text-3xl md:text-5xl font-extrabold bg-gradient-to-r from-purple-400 to-blue-500 inline-block text-transparent bg-clip-text drop-shadow-lg">
-              <TypingAnimation 
-                words={["Beyda Nur", "iOS Developer", "Backend Developer", "Full Stack"]}
-                className="inline-block"
-              />
-            </h2>
-          </div>
+        <div className="text-left max-w-2xl space-y-6">
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="space-y-4"
+          >
+            <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
+              <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-foreground">
+                Merhaba, ben
+              </h1>
+              <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold text-foreground">
+                <TypingAnimation 
+                  words={["Beyda Nur", "iOS Developer", "Backend Developer", "Full Stack"]}
+                  className="inline-block"
+                />
+              </h1>
+            </div>
 
-          <ScrollReveal>
-            <p className="text-lg font-serif font-medium text-black dark:text-gray-300">
-              💻iOS & Backend Developer | React, React Native ile modern teknolojilerle projeler geliştiriyorum.
-            </p>
-          </ScrollReveal>
+            <ScrollReveal>
+              <p className="text-lg md:text-xl text-muted-foreground leading-relaxed">
+                💻 iOS & Backend Developer | React, React Native ile modern teknolojilerle projeler geliştiriyorum.
+              </p>
+            </ScrollReveal>
 
-          <ScrollReveal delay={0.2}>
-            <p className="mt-4 text-md font-serif text-black dark:text-gray-300 italic">
-              &ldquo;Her gün yeni bir satır kod, yeni bir macera!&rdquo; ☕
-            </p>
-          </ScrollReveal>
+            <ScrollReveal delay={0.2}>
+              <p className="text-base md:text-lg text-muted-foreground italic">
+                &ldquo;Her gün yeni bir satır kod, yeni bir macera!&rdquo; ☕
+              </p>
+            </ScrollReveal>
+          </motion.div>
 
           {/* Yetenekler */}
-          <div className="mt-6 space-y-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="space-y-4"
+          >
             <ScrollReveal delay={0.3}>
-              <div>
-                <p className="text-black dark:text-gray-300 font-serif">
-                  Çeşitli kurumlarda mentorluk yaparak öğrencilere rehberlik
-                  ediyorum.
-                </p>
-              </div>
+              <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+                <CardContent className="pt-6">
+                  <p className="text-foreground">
+                    🎓 Çeşitli kurumlarda mentorluk yaparak öğrencilere rehberlik ediyorum.
+                  </p>
+                </CardContent>
+              </Card>
             </ScrollReveal>
             <ScrollReveal delay={0.4}>
-              <div>
-                <p className="text-black dark:text-gray-300 font-serif">
-                  Modern frontend teknolojileri ile dinamik ve performanslı mobil
-                  uygulamalar geliştiriyorum.
-                </p>
-              </div>
+              <Card className="bg-card/50 backdrop-blur-sm border-border/50">
+                <CardContent className="pt-6">
+                  <p className="text-foreground">
+                    🚀 Modern frontend teknolojileri ile dinamik ve performanslı mobil uygulamalar geliştiriyorum.
+                  </p>
+                </CardContent>
+              </Card>
             </ScrollReveal>
-          </div>
-          <div className="mt-6 flex flex-wrap justify-start space-x-4 space-y-4 md:space-y-0">
-            <a
-              href="/contact"
-              className="bg-gradient-to-r from-purple-600 to-blue-500 px-6 py-3 rounded-lg text-white font-semibold hover:shadow-lg transition-all duration-300"
-            >
-              📩 Benimle İletişime Geç
-            </a>
-            <a
-              href="/Beyda_Nur_Pinarbasi_CV.pdf"
-              download
-              className="bg-gradient-to-r from-gray-700 to-gray-900 px-6 py-3 rounded-lg text-white font-semibold hover:shadow-lg transition-all duration-300 flex items-center gap-2"
-            >
-              📄 CV İndir
-            </a>
-            <a
-              href="/projects"
-              className="bg-gradient-to-r from-blue-600 to-purple-500 px-6 py-3 rounded-lg text-white font-semibold hover:shadow-lg transition-all duration-300"
-            >
-              🚀 Projelerim
-            </a>
-          </div>
+          </motion.div>
+
+          {/* Butonlar */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.6 }}
+            className="flex flex-wrap gap-4"
+          >
+            <Button asChild size="lg" className="bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white">
+              <Link href="/contact">
+                📩 Benimle İletişime Geç
+              </Link>
+            </Button>
+            <Button asChild size="lg" variant="outline" className="border-2">
+              <Link href="/projects">
+                🚀 Projelerim
+              </Link>
+            </Button>
+          </motion.div>
 
           {/* Sosyal Medya */}
-          <div className="mt-6 flex space-x-6 text-3xl text-slate-950 justify-start">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.8 }}
+            className="flex gap-4"
+          >
             {[
               {
                 href: "https://www.linkedin.com/in/beyda-nur-p%C4%B1narba%C5%9F%C4%B1/",
-                icon: <FaLinkedin className="hover:text-blue-700 transition" />,
+                icon: <FaLinkedin className="h-5 w-5" />,
+                label: "LinkedIn",
+                color: "hover:text-blue-600",
               },
               {
                 href: "https://www.instagram.com/cekununzamani",
-                icon: <FaInstagram className="hover:text-red-600 transition" />,
+                icon: <FaInstagram className="h-5 w-5" />,
+                label: "Instagram",
+                color: "hover:text-slate-600 dark:hover:text-slate-400",
               },
               {
                 href: "mailto:beydanur.pinarbasi@gmail.com",
-                icon: <FaEnvelope className="hover:text-red-500 transition" />,
+                icon: <FaEnvelope className="h-5 w-5" />,
+                label: "Email",
+                color: "hover:text-red-600",
               },
             ].map((social, index) => (
-              <a
+              <Button
                 key={index}
-                href={social.href}
-                target="_blank"
-                rel="noopener noreferrer"
+                variant="outline"
+                size="icon"
+                asChild
+                className={cn("rounded-full border-2", social.color)}
               >
-                <div className="p-3 rounded-full bg-transparent border-2 border-gray-300 hover:bg-gray-200 transition">
+                <a
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={social.label}
+                >
                   {social.icon}
-                </div>
-              </a>
+                </a>
+              </Button>
             ))}
-          </div>
+          </motion.div>
         </div>
       </div>
 
       {/* İstatistikler Bölümü */}
-      <div className="relative z-10 w-full max-w-6xl mx-auto mt-20 mb-20 px-4">
+      <section className="relative z-10 w-full max-w-7xl mx-auto mt-32 mb-20 px-4">
         <ScrollReveal>
-          <h3 className="text-3xl md:text-4xl font-bold text-center mb-12 text-black dark:text-white">
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-4 text-foreground">
             İstatistiklerim
-          </h3>
+          </h2>
+          <p className="text-center text-muted-foreground mb-12 text-lg">
+            Kariyerim boyunca elde ettiğim başarılar
+          </p>
         </ScrollReveal>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {[
             {
               icon: FaProjectDiagram,
               number: "50+",
               label: "Tamamlanan Proje",
-              color: "from-purple-500 to-purple-700",
+              description: "Başarıyla tamamlanan projeler",
+              gradient: "from-slate-600 to-slate-800",
+              bgGradient: "from-slate-500/10 to-slate-700/10",
             },
             {
               icon: FaCode,
               number: "3+",
               label: "Yıl Deneyim",
-              color: "from-blue-500 to-blue-700",
+              description: "Yazılım geliştirme deneyimi",
+              gradient: "from-blue-500 to-blue-700",
+              bgGradient: "from-blue-500/10 to-blue-700/10",
             },
             {
               icon: FaUsers,
               number: "10+",
               label: "Mentorluk Yapılan Öğrenci",
-              color: "from-green-500 to-green-700",
+              description: "Rehberlik ettiğim öğrenciler",
+              gradient: "from-green-500 to-green-700",
+              bgGradient: "from-green-500/10 to-green-700/10",
             },
             {
               icon: FaAward,
               number: "100%",
               label: "Müşteri Memnuniyeti",
-              color: "from-orange-500 to-orange-700",
+              description: "Memnun kalan müşteriler",
+              gradient: "from-orange-500 to-orange-700",
+              bgGradient: "from-orange-500/10 to-orange-700/10",
             },
           ].map((stat, index) => {
             const Icon = stat.icon;
             return (
               <ScrollReveal key={index} delay={index * 0.1}>
-                <motion.div
-                  whileHover={{ scale: 1.05, y: -5 }}
-                  className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-6 rounded-xl shadow-lg text-center border border-gray-200 dark:border-gray-700"
-                >
-                  <div className={`inline-flex p-4 rounded-full bg-gradient-to-r ${stat.color} mb-4`}>
-                    <Icon className="text-white text-2xl" />
-                  </div>
-                  <h4 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2">
-                    {stat.number}
-                  </h4>
-                  <p className="text-sm md:text-base text-gray-600 dark:text-gray-300">
-                    {stat.label}
-                  </p>
+                <motion.div whileHover={{ scale: 1.03, y: -5 }} transition={{ duration: 0.2 }}>
+                  <Card className={cn(
+                    "h-full border-2 bg-card/80 backdrop-blur-sm transition-all duration-300",
+                    `bg-gradient-to-br ${stat.bgGradient}`
+                  )}>
+                    <CardHeader className="text-center pb-3">
+                      <div className={cn(
+                        "inline-flex p-4 rounded-full bg-gradient-to-r mb-4",
+                        `bg-gradient-to-r ${stat.gradient}`
+                      )}>
+                        <Icon className="text-white text-2xl" />
+                      </div>
+                      <CardTitle className="text-4xl md:text-5xl font-bold text-foreground mb-2">
+                        {stat.number}
+                      </CardTitle>
+                      <CardDescription className="text-base md:text-lg font-semibold text-foreground">
+                        {stat.label}
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent className="text-center pt-0">
+                      <p className="text-sm text-muted-foreground">
+                        {stat.description}
+                      </p>
+                    </CardContent>
+                  </Card>
                 </motion.div>
               </ScrollReveal>
             );
           })}
         </div>
-      </div>
+      </section>
     </div>
   );
 }
