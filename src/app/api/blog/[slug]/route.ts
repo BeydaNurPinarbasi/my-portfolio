@@ -25,12 +25,13 @@ async function getBlogPosts() {
 // GET - Slug'a göre tek blog yazısı getir
 export async function GET(
   req: Request,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
+    const { slug } = await params;
     const posts = await getBlogPosts();
     const post = posts.find(
-      (p: any) => p.slug === params.slug && p.published
+      (p: any) => p.slug === slug && p.published
     );
 
     if (!post) {
