@@ -32,12 +32,12 @@ export default function BlogPostPage() {
 
   const fetchPost = async () => {
     try {
-      const response = await fetch("/api/blog");
-      const data = await response.json();
-      const foundPost = data.find((p: BlogPost) => p.slug === slug && p.published);
-
-      if (foundPost) {
-        setPost(foundPost);
+      // Slug'a göre direkt endpoint kullan (daha hızlı)
+      const response = await fetch(`/api/blog/${slug}`);
+      
+      if (response.ok) {
+        const data = await response.json();
+        setPost(data);
       } else {
         setError("Blog yazısı bulunamadı");
       }
