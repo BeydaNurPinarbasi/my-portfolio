@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/app/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,7 +11,6 @@ export default function AdminLogin() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -20,14 +18,24 @@ export default function AdminLogin() {
     setError("");
     setLoading(true);
 
-    const success = await login(email, password);
-    
-    if (success) {
-      router.push("/admin");
-    } else {
-      setError("E-posta veya şifre hatalı!");
-      setLoading(false);
+    try {
+      const res = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      if (res.ok) {
+        router.push("/admin");
+        router.refresh();
+        return;
+      }
+      const data = await res.json().catch(() => ({}));
+      setError(data.error || "Giriş yapılamadı.");
+    } catch {
+      setError("Sunucuya ulaşılamadı. Lütfen tekrar deneyin.");
     }
+    setLoading(false);
   };
 
   return (

@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# örnek env dosyası commit edilebilir
+!.env.example
+
+# müşteri/marka adları için yerel denetim listesi (asla commit edilmez)
+.content-denylist

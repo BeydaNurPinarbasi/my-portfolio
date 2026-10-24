@@ -1,15 +1,9 @@
 "use client";
 import React from "react";
 import { ThemeProvider } from "../contexts/ThemeContext";
-import { AuthProvider } from "../contexts/AuthContext";
 
+// Not: Eskiden burada istemci tarafı AuthProvider vardı. Kaldırıldı: kimlik
+// doğrulama artık tamamen sunucudadır (proxy.ts + requireAdmin).
 export default function ThemeWrapper({ children }: { children: React.ReactNode }) {
-  return (
-    <ThemeProvider>
-      <AuthProvider>
-        {children}
-      </AuthProvider>
-    </ThemeProvider>
-  );
+  return <ThemeProvider>{children}</ThemeProvider>;
 }
-

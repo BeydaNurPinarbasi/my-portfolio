@@ -1,0 +1,20 @@
+# Gizli bilgiler imaja ASLA girmez: env değerleri Dokploy'da çalışma anında verilir.
+.env
+.env.*
+!.env.example
+.content-denylist
+
+# Build/araç çıktıları ve bağımlılıklar (imaj içinde yeniden üretilir)
+node_modules
+.next
+.git
+.github
+.vscode
+.DS_Store
+*.log
+*.tsbuildinfo
+coverage
+
+# Çalışma anında gerekmeyenler
+docs
+README.md

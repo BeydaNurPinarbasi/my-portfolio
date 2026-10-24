@@ -1,0 +1,922 @@
+/* Hikâye sayfaları (/, /about). Renk ve tipografi token'ları immersive.css'teki
+   .imm-root bloğundan gelir (palet -> roller -> kategori). Burada ham renk değeri kullanılmaz. */
+
+.st-root {
+  --nav-h: 3.75rem;
+  --copy-w: min(38rem, 40vw);
+  font-family: var(--font-display), system-ui, sans-serif;
+}
+
+/* ---- Gezinme ---------------------------------------------------------------------------- */
+.st-nav {
+  position: fixed;
+  z-index: 30;
+  inset: 0 0 auto 0;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0 var(--gutter);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--imm-ink-2);
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--imm-bg) 92%, transparent), transparent);
+}
+.st-nav a {
+  color: inherit;
+  text-decoration: none;
+}
+.st-nav-name {
+  color: var(--imm-ink);
+}
+.st-nav ul {
+  display: flex;
+  gap: clamp(0.9rem, 2vw, 1.8rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.st-nav a[aria-current] {
+  color: var(--imm-accent-ink);
+  text-decoration: underline;
+  text-underline-offset: 0.35em;
+}
+.st-nav a:hover {
+  color: var(--imm-accent-ink);
+}
+.st-root a:focus-visible,
+.st-root button:focus-visible,
+.st-nav a:focus-visible {
+  outline: 2px solid var(--imm-accent);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+/* ---- Sahne: sticky arka plan, içerik üstünden akar (scroll-jacking yok) -------------------- */
+.st-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+/* Geniş ekranda metin kolonu için yumuşak okunabilirlik zemini (sol). */
+.st-stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--imm-bg) 88%, transparent) 0%,
+    color-mix(in srgb, var(--imm-bg) 55%, transparent) 34%,
+    transparent 56%
+  );
+}
+.st-canvas-host,
+.st-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.st-canvas {
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+.st-root[data-ready="true"] .st-canvas {
+  opacity: 1;
+}
+
+/* SVG yedek: WebGL/JS yoksa bölüme göre biçim değişir (aynı anlam). */
+.st-glyphs {
+  position: absolute;
+  right: 3vw;
+  top: 50%;
+  width: min(46vw, 40rem);
+  aspect-ratio: 1;
+  transform: translateY(-50%);
+  transition: opacity 0.8s ease;
+}
+.st-root[data-ready="true"] .st-glyphs {
+  opacity: 0;
+}
+.st-glyph {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transform: translateY(14px) scale(0.97);
+  transition:
+    opacity 0.7s ease,
+    transform 0.9s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.st-root[data-glyph="scatter"] .st-glyph--scatter,
+.st-root[data-glyph="stack"] .st-glyph--stack,
+.st-root[data-glyph="field"] .st-glyph--field,
+.st-root[data-glyph="compact"] .st-glyph--compact,
+.st-root[data-glyph="layers"] .st-glyph--layers,
+.st-root[data-glyph="inspect"] .st-glyph--inspect,
+.st-root[data-glyph="calm"] .st-glyph--calm,
+.st-root[data-glyph="disc"] .st-glyph--disc {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---- Perde rayı ------------------------------------------------------------------------- */
+.st-rail {
+  position: fixed;
+  z-index: 20;
+  right: var(--gutter);
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  gap: 0.9rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  color: var(--imm-ink-3);
+  text-align: right;
+  /* 3D'nin üstünde okunabilir kalsın */
+  padding: 0.7rem 0.8rem;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--imm-bg) 82%, transparent);
+  backdrop-filter: blur(6px);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.st-root:not([data-pillar=""]) .st-rail {
+  opacity: 1;
+}
+.st-rail li {
+  transition: color 0.4s ease;
+}
+.st-rail span {
+  display: inline-block;
+  min-width: 1.6rem;
+  text-align: center;
+  padding: 0.15rem 0.35rem;
+  border-radius: 999px;
+}
+.st-root[data-pillar="merak"] .st-rail [data-pillar="merak"],
+.st-root[data-pillar="uretim"] .st-rail [data-pillar="uretim"],
+.st-root[data-pillar="sorumluluk"] .st-rail [data-pillar="sorumluluk"] {
+  color: var(--imm-ink);
+}
+.st-root[data-pillar="merak"] .st-rail [data-pillar="merak"] span,
+.st-root[data-pillar="uretim"] .st-rail [data-pillar="uretim"] span,
+.st-root[data-pillar="sorumluluk"] .st-rail [data-pillar="sorumluluk"] span {
+  background: var(--imm-accent);
+  color: var(--imm-bg);
+}
+
+/* ---- Akış ------------------------------------------------------------------------------- */
+.st-flow {
+  position: relative;
+  z-index: 2;
+  margin-top: -100vh;
+  margin-top: -100svh;
+}
+.st-sec {
+  position: relative;
+  padding: 0 var(--gutter);
+}
+
+/* Tipografi: başlık DM Sans (kinetik ağırlık), metin DM Sans, meta DM Mono. */
+.st-eyebrow {
+  margin: 0 0 1.1rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.74rem;
+  letter-spacing: 0.12em;
+  color: var(--imm-ink-2);
+}
+.st-idx {
+  display: inline-block;
+  margin-right: 0.5rem;
+  padding: 0.12rem 0.5rem;
+  border-radius: 999px;
+  background: var(--imm-wash);
+  color: var(--imm-ink);
+}
+.st-h1 {
+  margin: 0;
+  font-weight: normal;
+  font-size: clamp(2.6rem, 6.2vw, 6.6rem);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  white-space: nowrap;
+}
+.st-h2 {
+  margin: 0 0 1.2rem;
+  font-size: clamp(2rem, 4vw, 3.6rem);
+  font-weight: normal;
+  font-variation-settings: "wght" 700, "opsz" 40;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+.st-h2--big {
+  font-size: clamp(2.6rem, 7vw, 6.4rem);
+}
+.st-h3 {
+  --w: 700;
+  margin: 0 0 1.3rem;
+  font-size: clamp(2rem, 4.1vw, 4rem);
+  font-weight: normal;
+  line-height: 1.04;
+  letter-spacing: -0.032em;
+  text-wrap: balance;
+}
+.st-word {
+  font-variation-settings: "wght" var(--w), "opsz" 40;
+}
+.st-h4 {
+  margin: 0 0 0.4rem;
+  font-size: 1.3rem;
+}
+.st-lead,
+.st-p {
+  margin: 0 0 1rem;
+  max-width: 36rem;
+  font-size: clamp(1rem, 1.15vw, 1.14rem);
+  line-height: 1.65;
+  color: var(--imm-ink-2);
+}
+.st-lead {
+  margin-top: 1.6rem;
+  max-width: 34rem;
+}
+.st-note {
+  margin: 1.6rem 0 0;
+  max-width: 34rem;
+  padding-left: 1rem;
+  border-left: 2px solid var(--imm-accent);
+  font-size: 0.98rem;
+  line-height: 1.6;
+  color: var(--imm-ink);
+}
+.st-meta {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  color: var(--imm-ink-3);
+}
+.st-link {
+  display: inline-block;
+  margin-top: 1.2rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  color: var(--imm-accent-ink);
+  text-decoration: underline;
+  text-underline-offset: 0.35em;
+}
+.st-btn {
+  display: inline-block;
+  padding: 0.95rem 1.5rem;
+  border-radius: 999px;
+  background: var(--imm-ink);
+  color: var(--imm-bg);
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+.st-btn:hover {
+  background: var(--imm-accent-ink);
+}
+.st-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.4rem;
+  margin-top: 1.8rem;
+}
+.st-actions .st-link {
+  margin-top: 0;
+}
+
+/* ---- Hero ------------------------------------------------------------------------------- */
+.st-hero {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-bottom: clamp(5rem, 14vh, 9rem);
+}
+.st-cue {
+  position: absolute;
+  left: 50%;
+  bottom: 1.4rem;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.64rem;
+  letter-spacing: 0.24em;
+  color: var(--imm-ink-3);
+  animation: imm-fade 1s ease 1.6s both;
+}
+.st-cue i {
+  width: 1px;
+  height: 2.4rem;
+  background: linear-gradient(var(--imm-accent), transparent);
+  animation: imm-drip 2.2s ease-in-out infinite;
+  transform-origin: top;
+}
+
+/* ---- Perde kartları --------------------------------------------------------------------- */
+.st-act {
+  min-height: 115vh;
+  min-height: 115svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.st-act-num {
+  margin: 0;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  color: var(--imm-accent-ink);
+}
+.st-act-word {
+  --w: 860;
+  margin: 0.2rem 0 0.6rem;
+  font-size: clamp(4.4rem, 15vw, 15rem);
+  font-weight: normal;
+  font-variation-settings: "wght" var(--w), "opsz" 40;
+  line-height: 0.95;
+  letter-spacing: -0.045em;
+}
+.st-act-def {
+  margin: 0;
+  max-width: 30rem;
+  font-size: clamp(1.05rem, 1.5vw, 1.35rem);
+  line-height: 1.5;
+  color: var(--imm-ink-2);
+}
+
+/* ---- Bölümler --------------------------------------------------------------------------- */
+.st-ch {
+  min-height: 150vh;
+  min-height: 150svh;
+  padding-top: 18vh;
+  padding-bottom: 18vh;
+}
+.st-ch .st-copy {
+  max-width: var(--copy-w);
+}
+/* Kısa bölümlerde metin sabit kalır, 3D altında dönüşür. Uzun bölümler (alanlar, değerler) akar. */
+.st-ch--discovery .st-copy,
+.st-ch--creation .st-copy,
+.st-ch--layers .st-copy,
+.st-ch--inquiry .st-copy,
+.st-ch--vision .st-copy {
+  position: sticky;
+  top: calc(var(--nav-h) + 9vh);
+}
+.st-ch--layers {
+  min-height: 240vh;
+  min-height: 240svh;
+}
+.st-ch--beyond {
+  min-height: 170vh;
+}
+.st-ch--approach {
+  min-height: 190vh;
+}
+.st-ch--vision {
+  min-height: 170vh;
+}
+
+/* 02 Merakın Peşinde: alanlar (renk = katman) */
+.st-domains {
+  display: grid;
+  gap: 0.5rem;
+  margin: 1.6rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.st-domain {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1.2rem 1fr;
+  column-gap: 0.7rem;
+  align-items: baseline;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--imm-line);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--imm-bg) 70%, transparent);
+  color: var(--imm-ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color 0.35s ease,
+    border-color 0.35s ease;
+}
+.st-domain[data-focus="true"] {
+  background: color-mix(in srgb, var(--cat) 45%, var(--imm-bg));
+}
+.st-domain[aria-pressed="true"] {
+  border-color: var(--imm-accent);
+}
+.st-dot {
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background: var(--cat);
+  box-shadow: inset 0 0 0 1px var(--imm-line);
+}
+.st-domain-label {
+  font-size: 1.1rem;
+  font-variation-settings: "wght" 640, "opsz" 24;
+}
+.st-domain-q {
+  grid-column: 2;
+  margin-top: 0.2rem;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--imm-ink-2);
+}
+
+/* 04 Bütünsel düşünme: katmanlar + kesişen konular */
+.st-caps {
+  display: grid;
+  gap: 0.45rem;
+  margin: 1.4rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.st-cap {
+  display: grid;
+  grid-template-columns: 3rem 1fr;
+  align-items: baseline;
+  color: var(--imm-ink-3);
+  transition: color 0.4s ease;
+}
+.st-cap[data-active="true"] {
+  color: var(--imm-ink);
+}
+.st-cap-idx {
+  justify-self: start;
+  padding: 0.1rem 0.45rem;
+  border-radius: 999px;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.7rem;
+  box-shadow: inset 0 0 0 1px var(--imm-line);
+  transition: background-color 0.4s ease;
+}
+.st-cap[data-active="true"] .st-cap-idx {
+  background: var(--cat);
+  box-shadow: none;
+}
+.st-cap-name {
+  font-size: clamp(1.25rem, 2vw, 1.75rem);
+  font-variation-settings: "wght" 420, "opsz" 32;
+  transition: font-variation-settings 0.5s ease;
+}
+.st-cap[data-active="true"] .st-cap-name {
+  font-variation-settings: "wght" 740, "opsz" 32;
+}
+.st-cap-desc {
+  grid-column: 2;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--imm-ink-2);
+}
+/* Animasyonlu seviyede yalnız aktif katmanın açıklaması görünür; JS/WebGL yoksa hepsi görünür. */
+.st-root:is([data-tier="full"], [data-tier="lite"]) .st-cap:not([data-active="true"]) .st-cap-desc {
+  display: none;
+}
+.st-concerns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 1.4rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.st-concerns li {
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid var(--imm-line);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.74rem;
+  color: var(--imm-ink-2);
+  transition:
+    background-color 0.5s ease,
+    border-color 0.5s ease,
+    color 0.5s ease;
+}
+/* Katmanlar yeniden birleştiğinde kesişen konular yanar: bütün, parçaların toplamından fazlası. */
+.st-root[data-whole="true"] .st-concerns li {
+  background: var(--imm-wash);
+  border-color: var(--imm-accent);
+  color: var(--imm-ink);
+}
+.st-concerns li:nth-child(2) { transition-delay: 0.08s; }
+.st-concerns li:nth-child(3) { transition-delay: 0.16s; }
+.st-concerns li:nth-child(4) { transition-delay: 0.24s; }
+.st-concerns li:nth-child(5) { transition-delay: 0.32s; }
+
+/* 05 Sorgulayıcı yaklaşım */
+.st-inquiry {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.4rem;
+  margin: 1.8rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.st-rule {
+  display: block;
+  height: 2px;
+  margin-bottom: 0.9rem;
+  background: var(--imm-accent);
+  transform-origin: left;
+}
+.st-inquiry h4 {
+  margin: 0 0 0.4rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  color: var(--imm-accent-ink);
+}
+.st-inquiry p {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.45;
+}
+
+/* 06 Çalışma biçimim: değer kelimeleri (kinetik ağırlık) */
+.st-values {
+  margin: 2.2rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.st-value {
+  --w: 700;
+  padding: 0.15em 0;
+  font-size: clamp(2.2rem, 5.6vw, 5.4rem);
+  font-variation-settings: "wght" var(--w), "opsz" 40;
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+  border-bottom: 1px solid var(--imm-line);
+}
+
+/* Kapanış bölümleri */
+.st-plain {
+  padding-top: 20vh;
+  padding-bottom: 20vh;
+}
+.st-plain .st-copy {
+  max-width: var(--copy-w);
+}
+.st-work {
+  display: grid;
+  gap: 1.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.st-contact {
+  min-height: 90vh;
+}
+
+.st-footer {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 2rem var(--gutter);
+  border-top: 1px solid var(--imm-line);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.72rem;
+  color: var(--imm-ink-3);
+  background: var(--imm-bg);
+}
+
+/* ---- Mobil: yapı üst yarıda, metin alt yarıda okunabilirlik kartında ---------------------- */
+@media (max-width: 767px) {
+  .st-root {
+    --copy-w: 100%;
+  }
+  .st-nav ul {
+    gap: 0.8rem;
+  }
+  .st-nav-name {
+    display: none;
+  }
+  .st-stage::after {
+    background: linear-gradient(to top, color-mix(in srgb, var(--imm-bg) 70%, transparent), transparent 55%);
+  }
+  .st-glyphs {
+    right: 50%;
+    top: 30%;
+    width: min(78vw, 22rem);
+    transform: translate(50%, -50%);
+  }
+  .st-rail {
+    display: none;
+  }
+  .st-h1 {
+    font-size: 7.4vw;
+  }
+  .st-hero .st-copy,
+  .st-ch .st-copy,
+  .st-plain .st-copy {
+    padding: 1.25rem 1.2rem;
+    border-radius: 18px;
+    background: color-mix(in srgb, var(--imm-bg) 88%, transparent);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 1px 0 var(--imm-line), 0 18px 40px -24px color-mix(in srgb, var(--imm-ink) 40%, transparent);
+  }
+  .st-hero {
+    padding-bottom: 5rem;
+  }
+  /* Kısa bölümler: kart ekranın altına yapışır (sticky bottom), yapı üst yarıda dönüşür;
+     metin bölüm boyunca okunur kalır. Uzun bölümler (alanlar, değerler) normal akar. */
+  .st-ch {
+    min-height: 160svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-top: 0;
+    padding-bottom: 4svh;
+  }
+  .st-ch--discovery .st-copy,
+  .st-ch--creation .st-copy,
+  .st-ch--layers .st-copy,
+  .st-ch--inquiry .st-copy,
+  .st-ch--vision .st-copy {
+    top: auto;
+    bottom: 0.75rem;
+  }
+  .st-ch--layers {
+    min-height: 220svh;
+  }
+  .st-ch--beyond,
+  .st-ch--approach {
+    min-height: 0;
+    padding-top: 50svh;
+  }
+  /* Animasyonlu seviyede katman listesi kompakt etiketlere döner: yapşık kart 3D'yi kapatmasın.
+     Statik/JS'siz durumda liste tam (açıklamalarla) kalır. */
+  .st-root:is([data-tier="full"], [data-tier="lite"]) .st-caps {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+  .st-root:is([data-tier="full"], [data-tier="lite"]) .st-cap {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.2rem 0.65rem 0.2rem 0.25rem;
+    border-radius: 999px;
+    border: 1px solid var(--imm-line);
+  }
+  .st-root:is([data-tier="full"], [data-tier="lite"]) .st-cap[data-active="true"] {
+    background: color-mix(in srgb, var(--cat) 50%, var(--imm-bg));
+  }
+  .st-root:is([data-tier="full"], [data-tier="lite"]) .st-cap-name {
+    font-size: 0.95rem;
+  }
+  .st-root:is([data-tier="full"], [data-tier="lite"]) .st-cap .st-cap-desc {
+    display: none;
+  }
+  .st-concerns li {
+    font-size: 0.68rem;
+    padding: 0.28rem 0.6rem;
+  }
+  .st-act {
+    min-height: 90svh;
+    justify-content: flex-end;
+    padding-bottom: 14svh;
+  }
+  .st-act-word {
+    font-size: 19vw;
+  }
+  .st-h3 {
+    font-size: clamp(1.7rem, 7.4vw, 2.3rem);
+  }
+  .st-inquiry {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  .st-value {
+    font-size: 10vw;
+  }
+  .st-plain {
+    padding-top: 40svh;
+  }
+}
+
+/* ---- Reduced motion: geçiş yok, tüm metin görünür ---------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .st-glyph,
+  .st-glyphs,
+  .st-canvas,
+  .st-concerns li,
+  .st-domain,
+  .st-cap,
+  .st-cap-name {
+    transition: none;
+  }
+  .st-cue,
+  .st-cue i {
+    animation: none;
+  }
+  .st-cap .st-cap-desc {
+    display: block;
+  }
+}
+
+/* ---- Hakkımda (/about): uzun okuma, WebGL yok ---------------------------------------- */
+.ab-bg {
+  position: fixed;
+  z-index: 0;
+}
+.ab {
+  position: relative;
+  z-index: 1;
+  padding: calc(var(--nav-h) + 12vh) var(--gutter) 0;
+}
+.ab-intro {
+  max-width: 54rem;
+  padding-bottom: 14vh;
+}
+.ab-h1 {
+  margin: 0 0 1.4rem;
+  font-size: clamp(3rem, 9vw, 8.4rem);
+  font-weight: normal;
+  font-variation-settings: "wght" 760, "opsz" 40;
+  letter-spacing: -0.045em;
+  line-height: 0.95;
+}
+.ab-lead {
+  margin: 0;
+  max-width: 44rem;
+  font-size: clamp(1.2rem, 2vw, 1.7rem);
+  line-height: 1.45;
+  color: var(--imm-ink);
+}
+/* Perde: solda sabit başlık + glif, sağda okunan bölümler. */
+.ab-act {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: clamp(2rem, 6vw, 6rem);
+  padding: 10vh 0;
+  border-top: 1px solid var(--imm-line);
+}
+.ab-act-head {
+  position: sticky;
+  top: calc(var(--nav-h) + 6vh);
+  align-self: start;
+}
+.ab-act-title {
+  margin: 0.2rem 0 0.6rem;
+  font-size: clamp(3rem, 7vw, 6.4rem);
+  font-weight: normal;
+  font-variation-settings: "wght" 820, "opsz" 40;
+  letter-spacing: -0.045em;
+  line-height: 0.95;
+}
+.ab-glyph {
+  display: block;
+  width: min(100%, 22rem);
+  margin-top: 2rem;
+}
+.ab-sec {
+  padding: 0 0 4.5rem;
+}
+.ab-h3 {
+  margin: 0 0 1rem;
+  font-size: clamp(1.5rem, 2.4vw, 2.1rem);
+  font-weight: normal;
+  font-variation-settings: "wght" 680, "opsz" 32;
+  letter-spacing: -0.025em;
+}
+.ab-list {
+  margin: 0.4rem 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: ab;
+}
+.ab-list li {
+  counter-increment: ab;
+  display: grid;
+  grid-template-columns: 2.4rem 1fr;
+  padding: 0.7rem 0;
+  border-bottom: 1px solid var(--imm-line);
+  font-size: 1.08rem;
+}
+.ab-list li::before {
+  content: counter(ab, decimal-leading-zero);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.72rem;
+  color: var(--imm-accent-ink);
+  padding-top: 0.3rem;
+}
+.ab-concerns {
+  margin-top: 1rem;
+}
+.ab-close {
+  padding: 14vh 0 16vh;
+  border-top: 1px solid var(--imm-line);
+}
+
+/* Merakın Peşinde haritası */
+.ab-constellation {
+  margin: 1.6rem 0 0.4rem;
+  padding: 1.2rem;
+  border: 1px solid var(--imm-line);
+  border-radius: 20px;
+  background: color-mix(in srgb, var(--imm-bg) 75%, transparent);
+}
+.ab-constellation svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.ab-link {
+  stroke: var(--imm-ink);
+  stroke-opacity: 0.22;
+  stroke-width: 1;
+  transition:
+    stroke 0.35s ease,
+    stroke-opacity 0.35s ease;
+}
+.ab-link--peer {
+  stroke-dasharray: 3 5;
+}
+.ab-link[data-lit="true"] {
+  stroke: var(--imm-accent);
+  stroke-opacity: 0.9;
+  stroke-width: 1.5;
+}
+.ab-node circle {
+  transition: r 0.35s ease;
+}
+.ab-domains {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.ab-domains .st-domain {
+  width: auto;
+  padding: 0.5rem 0.85rem;
+  border-radius: 999px;
+}
+.ab-domains .st-domain-label {
+  font-size: 0.95rem;
+}
+.ab-caption {
+  min-height: 3em;
+  margin: 1rem 0 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--imm-ink-2);
+}
+
+@media (max-width: 767px) {
+  .ab-act {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .ab-act-head {
+    position: static;
+  }
+  .ab-glyph {
+    width: 11rem;
+    margin-top: 1rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ab-link,
+  .ab-node circle {
+    transition: none;
+  }
+}
+
+/* Çapa ile gelindiğinde başlık sabit gezinmenin altında kalmasın. */
+.st-root [data-section],
+.ab-sec,
+.ab-act {
+  scroll-margin-top: calc(var(--nav-h) + 1rem);
+}

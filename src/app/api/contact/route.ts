@@ -1,30 +1,78 @@
 import { NextResponse } from "next/server";
+import { isSameOrigin } from "@/lib/http/origin";
 import nodemailer from "nodemailer";
+import { clientIp, rateLimit } from "@/lib/auth/rate-limit";
+
+export const runtime = "nodejs";
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const PHONE_RE = /^[0-9+()\-\s]{7,25}$/;
+
+// Başlık enjeksiyonunu (CR/LF) ve kontrol karakterlerini temizler.
+const oneLine = (s: string) => s.replace(/[\u0000-\u001f\u007f]+/g, " ").trim();
 
 export async function POST(req: Request) {
+  if (!isSameOrigin(req)) {
+    return NextResponse.json({ error: "Geçersiz istek kaynağı." }, { status: 403 });
+  }
+
+  // Bellek içi sınır (tek süreç). Birden fazla replika için proxy düzeyinde limit gerekir (bkz. rate-limit.ts).
+  const limit = rateLimit(`contact:${clientIp(req)}`, 5, 60 * 60 * 1000);
+  if (!limit.ok) {
+    return NextResponse.json(
+      { error: "Çok fazla istek gönderdiniz. Lütfen daha sonra tekrar deneyin." },
+      { status: 429, headers: { "Retry-After": String(limit.retryAfter) } }
+    );
+  }
+
+  let body: Record<string, unknown>;
   try {
-    const { name, email, phone, message } = await req.json();
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Geçersiz istek." }, { status: 400 });
+  }
 
-    if (!name || !email || !phone || !message) {
-      return NextResponse.json({ error: "Lütfen tüm alanları doldurun." }, { status: 400 });
-    }
+  // Honeypot: gerçek kullanıcılar bu gizli alanı doldurmaz. Botu sessizce "başarılı" say.
+  if (typeof body.website === "string" && body.website.length > 0) {
+    return NextResponse.json({ success: "E-posta başarıyla gönderildi!" }, { status: 200 });
+  }
 
+  const name = typeof body.name === "string" ? oneLine(body.name) : "";
+  const email = typeof body.email === "string" ? oneLine(body.email) : "";
+  const phone = typeof body.phone === "string" ? oneLine(body.phone) : "";
+  const message = typeof body.message === "string" ? body.message.trim() : "";
+
+  if (!name || !email || !phone || !message) {
+    return NextResponse.json({ error: "Lütfen tüm alanları doldurun." }, { status: 400 });
+  }
+  if (name.length > 100 || email.length > 254 || message.length > 5000) {
+    return NextResponse.json({ error: "Alanlardan biri izin verilen uzunluğu aşıyor." }, { status: 400 });
+  }
+  if (!EMAIL_RE.test(email)) {
+    return NextResponse.json({ error: "Geçerli bir e-posta adresi girin." }, { status: 400 });
+  }
+  if (!PHONE_RE.test(phone)) {
+    return NextResponse.json({ error: "Geçerli bir telefon numarası girin." }, { status: 400 });
+  }
+
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    console.error("[contact] EMAIL_USER / EMAIL_PASS tanımlı değil.");
+    return NextResponse.json({ error: "E-posta gönderme şu an kullanılamıyor." }, { status: 503 });
+  }
+
+  try {
     const transporter = nodemailer.createTransport({
       service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
+      auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
     });
 
-    const mailOptions = {
+    await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: "beydanur.pinarbasi@gmail.com",
+      replyTo: email,
       subject: `beyda.dev sitenden mesaj var - ${name}`,
       text: `Gönderen: ${name} (${email})\nTelefon: ${phone}\n\nMesaj:\n${message}`,
-    };
-
-    await transporter.sendMail(mailOptions);
+    });
 
     return NextResponse.json({ success: "E-posta başarıyla gönderildi!" }, { status: 200 });
   } catch (error) {

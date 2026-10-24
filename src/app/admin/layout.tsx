@@ -1,7 +1,5 @@
 "use client";
-import { useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { useAuth } from "@/app/contexts/AuthContext";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { 
@@ -14,6 +12,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import ThemeWrapper from "@/app/components/ThemeWrapper";
 
 const sidebarItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
@@ -21,29 +20,29 @@ const sidebarItems = [
   { href: "/admin/projects", label: "Projeler", icon: FolderKanban },
 ];
 
+// Tema bağlamı (sistem karanlık modu) yalnızca admin panelinde: public site kendi açık temasını kullanır.
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  const { isAuthenticated, logout } = useAuth();
+  return (
+    <ThemeWrapper>
+      <AdminShell>{children}</AdminShell>
+    </ThemeWrapper>
+  );
+}
+
+function AdminShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  useEffect(() => {
-    if (!isAuthenticated && pathname !== "/admin/login") {
-      router.push("/admin/login");
-    }
-  }, [isAuthenticated, pathname, router]);
 
   if (pathname === "/admin/login") {
     return <>{children}</>;
   }
 
-  if (!isAuthenticated) {
-    return null;
-  }
-
-  const handleLogout = () => {
-    logout();
+  // Sayfa erişimi proxy.ts ile sunucuda zaten doğrulandı; burada sadece çıkış var.
+  const handleLogout = async () => {
+    await fetch("/api/admin/logout", { method: "POST" }).catch(() => undefined);
     router.push("/admin/login");
+    router.refresh();
   };
 
   return (

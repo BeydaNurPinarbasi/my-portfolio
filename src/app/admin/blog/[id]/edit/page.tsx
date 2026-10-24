@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Save } from "lucide-react";
 import Link from "next/link";
+import { adminFetch } from "@/lib/admin/api";
 
 export default function EditBlogPost() {
   const router = useRouter();
@@ -30,7 +31,7 @@ export default function EditBlogPost() {
 
   const fetchPost = async () => {
     try {
-      const response = await fetch("/api/blog");
+      const response = await adminFetch("/api/admin/blog");
       const data = await response.json();
       const post = data.find((p: any) => p.id === id);
 
@@ -80,7 +81,7 @@ export default function EditBlogPost() {
     setSaving(true);
 
     try {
-      const response = await fetch("/api/blog", {
+      const response = await adminFetch("/api/blog", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id, ...formData }),

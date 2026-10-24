@@ -1,145 +1,119 @@
 import { NextResponse } from "next/server";
-import { writeFile, readFile, mkdir } from "fs/promises";
-import { existsSync } from "fs";
-import path from "path";
+import { randomUUID } from "crypto";
+import { requireAdmin } from "@/lib/auth/guard";
+import { mutatePosts, readPosts, StorageUnavailableError, toPublicPost, type BlogPost } from "@/lib/blog/store";
+import { parseBlogInput } from "@/lib/blog/validate";
 
-const BLOG_DIR = path.join(process.cwd(), "data");
-const BLOG_FILE = path.join(BLOG_DIR, "blog.json");
-
-// Ensure data directory exists
-async function ensureDataDir() {
-  if (!existsSync(BLOG_DIR)) {
-    await mkdir(BLOG_DIR, { recursive: true });
-  }
-  if (!existsSync(BLOG_FILE)) {
-    await writeFile(BLOG_FILE, JSON.stringify([], null, 2), "utf-8");
-  }
-}
-
-async function getBlogPosts() {
-  await ensureDataDir();
-  try {
-    const data = await readFile(BLOG_FILE, "utf-8");
-    return JSON.parse(data);
-  } catch {
-    return [];
-  }
-}
-
-async function saveBlogPosts(posts: any[]) {
-  await ensureDataDir();
-  await writeFile(BLOG_FILE, JSON.stringify(posts, null, 2), "utf-8");
-}
-
-// GET - Tüm blog yazılarını getir
+// GET (public): SADECE yayınlanmış yazılar. Taslaklar yalnızca /api/admin/blog'dan,
+// geçerli admin oturumuyla okunabilir.
 export async function GET() {
   try {
-    const posts = await getBlogPosts();
+    const posts = (await readPosts()).filter((p) => p.published).map(toPublicPost);
     return NextResponse.json(posts);
-  } catch (error) {
-    return NextResponse.json(
-      { error: "Blog yazıları getirilemedi" },
-      { status: 500 }
-    );
+  } catch {
+    return NextResponse.json({ error: "Blog yazıları getirilemedi" }, { status: 500 });
   }
 }
 
-// POST - Yeni blog yazısı ekle
+function storageError(err: unknown, fallback: string) {
+  if (err instanceof StorageUnavailableError) {
+    return NextResponse.json({ error: err.message }, { status: 503 });
+  }
+  return NextResponse.json({ error: fallback }, { status: 500 });
+}
+
+// POST: yeni yazı (admin)
 export async function POST(req: Request) {
+  const denied = await requireAdmin(req, { mutation: true });
+  if (denied) return denied;
+
+  let body: unknown;
   try {
-    const body = await req.json();
-    const { title, content, excerpt, slug, published } = body;
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Geçersiz JSON." }, { status: 400 });
+  }
+  const parsed = parseBlogInput(body, "create");
+  if (!parsed.ok) return NextResponse.json({ error: parsed.error }, { status: 400 });
+  const input = parsed.value;
 
-    if (!title || !content || !slug) {
-      return NextResponse.json(
-        { error: "Başlık, içerik ve slug zorunludur" },
-        { status: 400 }
-      );
-    }
-
-    const posts = await getBlogPosts();
-    const newPost = {
-      id: Date.now().toString(),
-      title,
-      content,
-      excerpt: excerpt || content.substring(0, 150) + "...",
-      slug,
-      published: published ?? false,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-
-    posts.push(newPost);
-    await saveBlogPosts(posts);
-
-    return NextResponse.json(newPost, { status: 201 });
-  } catch (error) {
-    return NextResponse.json(
-      { error: "Blog yazısı eklenemedi" },
-      { status: 500 }
-    );
+  try {
+    const created = await mutatePosts<BlogPost | null>((posts) => {
+      if (posts.some((p) => p.slug === input.slug)) return { posts, result: null };
+      const now = new Date().toISOString();
+      const post = {
+        id: randomUUID(),
+        title: input.title!,
+        slug: input.slug!,
+        content: input.content!,
+        excerpt: input.excerpt || input.content!.slice(0, 150) + "...",
+        published: input.published ?? false,
+        createdAt: now,
+        updatedAt: now,
+      };
+      return { posts: [...posts, post], result: post };
+    });
+    if (!created) return NextResponse.json({ error: "Bu slug zaten kullanılıyor." }, { status: 409 });
+    return NextResponse.json(created, { status: 201 });
+  } catch (err) {
+    return storageError(err, "Blog yazısı eklenemedi");
   }
 }
 
-// PUT - Blog yazısı güncelle
+// PUT: güncelle (admin)
 export async function PUT(req: Request) {
+  const denied = await requireAdmin(req, { mutation: true });
+  if (denied) return denied;
+
+  let body: unknown;
   try {
-    const body = await req.json();
-    const { id, title, content, excerpt, slug, published } = body;
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Geçersiz JSON." }, { status: 400 });
+  }
+  const id = typeof (body as { id?: unknown })?.id === "string" ? (body as { id: string }).id : "";
+  if (!id) return NextResponse.json({ error: "ID gerekli" }, { status: 400 });
 
-    if (!id) {
-      return NextResponse.json({ error: "ID gerekli" }, { status: 400 });
-    }
+  const parsed = parseBlogInput(body, "update");
+  if (!parsed.ok) return NextResponse.json({ error: parsed.error }, { status: 400 });
+  const input = parsed.value;
 
-    const posts = await getBlogPosts();
-    const index = posts.findIndex((p: any) => p.id === id);
-
-    if (index === -1) {
-      return NextResponse.json(
-        { error: "Blog yazısı bulunamadı" },
-        { status: 404 }
-      );
-    }
-
-    posts[index] = {
-      ...posts[index],
-      title: title || posts[index].title,
-      content: content || posts[index].content,
-      excerpt: excerpt || posts[index].excerpt,
-      slug: slug || posts[index].slug,
-      published: published !== undefined ? published : posts[index].published,
-      updatedAt: new Date().toISOString(),
-    };
-
-    await saveBlogPosts(posts);
-    return NextResponse.json(posts[index]);
-  } catch (error) {
-    return NextResponse.json(
-      { error: "Blog yazısı güncellenemedi" },
-      { status: 500 }
-    );
+  try {
+    const outcome = await mutatePosts<BlogPost | "notfound" | "conflict">((posts) => {
+      const index = posts.findIndex((p) => p.id === id);
+      if (index === -1) return { posts, result: "notfound" };
+      if (input.slug && posts.some((p) => p.slug === input.slug && p.id !== id)) {
+        return { posts, result: "conflict" };
+      }
+      const updated = { ...posts[index], ...input, updatedAt: new Date().toISOString() };
+      const next = [...posts];
+      next[index] = updated;
+      return { posts: next, result: updated };
+    });
+    if (outcome === "notfound") return NextResponse.json({ error: "Blog yazısı bulunamadı" }, { status: 404 });
+    if (outcome === "conflict") return NextResponse.json({ error: "Bu slug zaten kullanılıyor." }, { status: 409 });
+    return NextResponse.json(outcome);
+  } catch (err) {
+    return storageError(err, "Blog yazısı güncellenemedi");
   }
 }
 
-// DELETE - Blog yazısı sil
+// DELETE: sil (admin)
 export async function DELETE(req: Request) {
+  const denied = await requireAdmin(req, { mutation: true });
+  if (denied) return denied;
+
+  const id = new URL(req.url).searchParams.get("id");
+  if (!id) return NextResponse.json({ error: "ID gerekli" }, { status: 400 });
+
   try {
-    const { searchParams } = new URL(req.url);
-    const id = searchParams.get("id");
-
-    if (!id) {
-      return NextResponse.json({ error: "ID gerekli" }, { status: 400 });
-    }
-
-    const posts = await getBlogPosts();
-    const filtered = posts.filter((p: any) => p.id !== id);
-
-    await saveBlogPosts(filtered);
+    const removed = await mutatePosts((posts) => {
+      const next = posts.filter((p) => p.id !== id);
+      return { posts: next, result: next.length !== posts.length };
+    });
+    if (!removed) return NextResponse.json({ error: "Blog yazısı bulunamadı" }, { status: 404 });
     return NextResponse.json({ success: true });
-  } catch (error) {
-    return NextResponse.json(
-      { error: "Blog yazısı silinemedi" },
-      { status: 500 }
-    );
+  } catch (err) {
+    return storageError(err, "Blog yazısı silinemedi");
   }
 }

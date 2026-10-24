@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, Save } from "lucide-react";
 import Link from "next/link";
+import { adminFetch } from "@/lib/admin/api";
 
 export default function NewBlogPost() {
   const router = useRouter();
@@ -49,7 +50,7 @@ export default function NewBlogPost() {
     setLoading(true);
 
     try {
-      const response = await fetch("/api/blog", {
+      const response = await adminFetch("/api/blog", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

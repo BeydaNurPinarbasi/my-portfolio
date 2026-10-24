@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Plus, Edit, Trash2 } from "lucide-react";
 import Link from "next/link";
+import { adminFetch } from "@/lib/admin/api";
 import {
   Table,
   TableBody,
@@ -36,7 +37,7 @@ export default function AdminBlog() {
 
   const fetchPosts = async () => {
     try {
-      const response = await fetch("/api/blog");
+      const response = await adminFetch("/api/admin/blog");
       const data = await response.json();
       setPosts(data);
     } catch (error) {
@@ -52,7 +53,7 @@ export default function AdminBlog() {
     }
 
     try {
-      const response = await fetch(`/api/blog?id=${id}`, {
+      const response = await adminFetch(`/api/blog?id=${encodeURIComponent(id)}`, {
         method: "DELETE",
       });
 
