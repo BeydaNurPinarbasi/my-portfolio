@@ -1,20 +1,19 @@
 import Link from "next/link";
 import { ROUTES } from "@/content/routes";
 import SiteNav, { SiteFooter } from "@/components/story/SiteNav";
-import StoryGlyph, { type GlyphVariant } from "@/components/story/StoryGlyph";
-import Constellation from "@/components/story/about/Constellation";
+import AboutGallery from "@/components/about/AboutGallery";
 import { ABOUT_INTRO, ABOUT_SECTIONS } from "@/content/about";
-import { PILLARS } from "@/content/pillars";
+import { DOMAINS } from "@/content/domains";
 import { CONCERNS } from "@/content/expertise";
+import { pillar } from "@/content/pillars";
 import { HOME_CONTACT } from "@/content/home";
 import { ABOUT_META, personJsonLd } from "@/content/seo";
-import type { PillarId } from "@/content/types";
+import "@/components/about/about-gallery.css";
 
-// Hakkımda: uzun okuma sayfası. Sunucu bileşeni; WebGL yok (performans ve okuma önceliği).
-// Aynı üç perde (Merak -> Üretim -> Sorumluluk), ana sayfadaki özetten farklı ve daha derin metin.
+// Hakkımda: neoklasik heykel galerisi, sayfa boyunca. Sticky 3D sahne (büst, sütun, kabartma) istemcide;
+// Hakkımda bölümleri sunucuda üretilen gerçek HTML'dir ve her biri bir kamera istasyonudur (data-station).
+// Metinler about.ts'ten, değiştirilmeden. WebGL/JS yokken sayfa düz metin olarak aynen okunur.
 export const metadata = ABOUT_META;
-
-const GLYPH: Record<PillarId, GlyphVariant> = { merak: "field", uretim: "layers", sorumluluk: "disc" };
 
 export default function AboutPage() {
   return (
@@ -23,75 +22,91 @@ export default function AboutPage() {
         İçeriğe geç
       </a>
       <SiteNav current={ROUTES.about} />
-      <div className="imm-bg ab-bg" aria-hidden="true" />
-      <main id="main" className="ab">
-        <header className="ab-intro">
-          <h1 className="ab-h1">{ABOUT_INTRO.title}</h1>
-          <p className="ab-lead">{ABOUT_INTRO.lead}</p>
-        </header>
+      <main id="main">
+        <AboutGallery>
+          <section data-station="overview" className="ag-sec ag-hero" aria-labelledby="ab-h1">
+            <h1 id="ab-h1" className="cl-h1">
+              {ABOUT_INTRO.title}
+            </h1>
+            <p className="cl-lead">{ABOUT_INTRO.lead}</p>
+            <p className="ag-cue">
+              Kaydır, heykelin etrafında ilerle <span aria-hidden="true">↓</span>
+            </p>
+          </section>
 
-        {PILLARS.map((p) => (
-          <section key={p.id} className="ab-act" aria-labelledby={`ab-${p.id}`}>
-            <div className="ab-act-head">
-              <p className="st-act-num" aria-hidden="true">
-                {p.numeral}
-              </p>
-              <h2 id={`ab-${p.id}`} className="ab-act-title">
-                {p.title}
-              </h2>
-              <p className="st-act-def">{p.definition}</p>
-              <StoryGlyph variant={GLYPH[p.id]} className="ab-glyph" />
-            </div>
-
-            <div className="ab-act-body">
-              {ABOUT_SECTIONS.filter((s) => s.pillar === p.id).map((s) => (
-                <article key={s.id} id={s.id} className="ab-sec" aria-labelledby={`${s.id}-t`}>
-                  <h3 id={`${s.id}-t`} className="ab-h3">
+          {ABOUT_SECTIONS.map((s, i) => {
+            const p = pillar(s.pillar);
+            const firstOfPillar = ABOUT_SECTIONS.findIndex((x) => x.pillar === s.pillar) === i;
+            return (
+              <section key={s.id} id={s.id} data-station={s.id} className="ag-sec" aria-labelledby={`${s.id}-t`}>
+                {firstOfPillar && (
+                  <div className="ag-act">
+                    <p className="ag-act-num" aria-hidden="true">
+                      {p.numeral}
+                    </p>
+                    <h2 className="ag-act-title">{p.title}</h2>
+                    <p className="ag-act-def">{p.definition}</p>
+                  </div>
+                )}
+                <article className="ag-card">
+                  <p className="cl-kicker">
+                    <span aria-hidden="true">{p.numeral}</span> {p.title}
+                  </p>
+                  <h3 id={`${s.id}-t`} className="cl-title">
                     {s.title}
                   </h3>
                   {s.paragraphs.map((t) => (
-                    <p key={t} className="st-p">
+                    <p key={t} className="cl-p">
                       {t}
                     </p>
                   ))}
                   {s.list && (
-                    <ul className="ab-list">
+                    <ul className="cl-list">
                       {s.list.map((t) => (
                         <li key={t}>{t}</li>
                       ))}
                     </ul>
                   )}
-                  {s.id === "beyond" && <Constellation />}
+                  {s.id === "beyond" && (
+                    <ul className="cl-qs" aria-label="Merak ettiğim alanlar">
+                      {DOMAINS.map((d) => (
+                        <li key={d.id}>
+                          <b>{d.label}</b> {d.question}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                   {s.id === "holistic" && (
-                    <ul className="st-concerns ab-concerns" aria-label="Her katmanı kesen konular">
+                    <ul className="cl-chips" aria-label="Her katmanı kesen konular">
                       {CONCERNS.map((c) => (
                         <li key={c}>{c}</li>
                       ))}
                     </ul>
                   )}
-                  {s.note && <p className="st-note">{s.note}</p>}
+                  {s.note && <p className="cl-note">{s.note}</p>}
                   {s.link && (
-                    <Link className="st-link" href={s.link.href}>
+                    <Link className="cl-link" href={s.link.href}>
                       {s.link.label} →
                     </Link>
                   )}
                 </article>
-              ))}
-            </div>
-          </section>
-        ))}
+              </section>
+            );
+          })}
 
-        <section className="ab-close" aria-labelledby="ab-close-t">
-          <h2 id="ab-close-t" className="st-h2 st-h2--big">
-            {HOME_CONTACT.title}
-          </h2>
-          <p className="st-p">{HOME_CONTACT.body}</p>
-          <div className="st-actions">
-            <Link className="st-btn" href={HOME_CONTACT.primary.href}>
-              {HOME_CONTACT.primary.label}
-            </Link>
-          </div>
-        </section>
+          {/* Kapanış: kamera "Gelecek" istasyonunda geri çekilmiş kalır. */}
+          <section data-station="future" className="ag-sec ag-close" aria-labelledby="ab-close-t">
+            <article className="ag-card">
+              <h2 id="ab-close-t" className="cl-title">
+                {HOME_CONTACT.title}
+              </h2>
+              <p className="cl-p">{HOME_CONTACT.body}</p>
+              <Link className="cl-start" href={HOME_CONTACT.primary.href}>
+                {HOME_CONTACT.primary.label} <span aria-hidden="true">→</span>
+              </Link>
+            </article>
+          </section>
+        </AboutGallery>
       </main>
       <SiteFooter />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personJsonLd()) }} />

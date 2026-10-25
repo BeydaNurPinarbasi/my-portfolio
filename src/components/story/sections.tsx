@@ -111,7 +111,14 @@ function ChapterExtras({ chapter }: { chapter: Chapter }) {
                 <span className="st-cap-idx" aria-hidden="true">
                   {c.index}
                 </span>
-                <span className="st-cap-name">{c.label}</span>
+                {/* Gerçek düğme: klavye ve dokunmatik için odak modunun (yakınlaş, içini aç) açılış noktası.
+                    JS/WebGL yoksa etkisiz ama zararsız; açıklama metni yine görünür. */}
+                <button type="button" className="st-cap-btn" data-focus-layer={i} aria-label={`${c.label}: yakından incele`}>
+                  <span className="st-cap-name">{c.label}</span>
+                  <span className="st-cap-open" aria-hidden="true">
+                    aç →
+                  </span>
+                </button>
                 <span className="st-cap-desc">{c.description}</span>
               </li>
             ))}

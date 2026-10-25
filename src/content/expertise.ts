@@ -11,6 +11,8 @@ export interface Capability {
   labelEn: string;
   description: string;
   tone: Tone; // kategori rengi: 3D katman ve liste aynı tonu kullanır (sıra = katman sırası)
+  /** 3D'de aktif katmanın davranış dili; sahnedeki mimari etikette görünür (docs/motion-direction.md §3). */
+  behavior: string;
 }
 
 export const CAPABILITIES: readonly Capability[] = [
@@ -21,6 +23,7 @@ export const CAPABILITIES: readonly Capability[] = [
     labelEn: "Mobile Development",
     description: "React Native ile iOS ve Android uygulamaları.",
     tone: "blush",
+    behavior: "Modüler ekran ritmi",
   },
   {
     id: "web",
@@ -29,6 +32,7 @@ export const CAPABILITIES: readonly Capability[] = [
     labelEn: "Web Development",
     description: "React, Next.js ve TypeScript ile web uygulamaları.",
     tone: "sky",
+    behavior: "Izgara · responsive yapı",
   },
   {
     id: "backend",
@@ -37,6 +41,7 @@ export const CAPABILITIES: readonly Capability[] = [
     labelEn: "Backend Development",
     description: "API tasarımı, servisler ve iş mantığı.",
     tone: "sage",
+    behavior: "Servis blokları · iş akışı",
   },
   {
     id: "data",
@@ -45,6 +50,7 @@ export const CAPABILITIES: readonly Capability[] = [
     labelEn: "Database & Infrastructure",
     description: "Veritabanı modelleme, sunucu ve deployment süreçleri.",
     tone: "dusk",
+    behavior: "İstif · node · dağıtım",
   },
   {
     id: "security",
@@ -53,6 +59,7 @@ export const CAPABILITIES: readonly Capability[] = [
     labelEn: "Security & Automation",
     description: "Kimlik doğrulama, yetkilendirme ve süreç otomasyonu.",
     tone: "slate",
+    behavior: "Sınır · doğrulama · otomasyon",
   },
 ] as const;
 

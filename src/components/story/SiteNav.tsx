@@ -1,4 +1,6 @@
+import Image from "next/image";
 import Link from "next/link";
+import wordmark from "@/assets/brand/logo-wordmark.png"; // şeffaf, kırpılmış, 720 px (kaynak: logo.png)
 import { PROFILE } from "@/content/profile";
 import { ROUTES } from "@/content/routes";
 
@@ -13,8 +15,9 @@ const LINKS = [
 export default function SiteNav({ current }: { current: string }) {
   return (
     <header className="st-nav">
-      <Link className="st-nav-name" href={ROUTES.home}>
-        {PROFILE.name}
+      {/* Logo ana sayfaya bağlanır. Görsel metin içerdiği için alt = "beyda.dev"; bağlantının adı tam ifade. */}
+      <Link className="st-nav-logo" href={ROUTES.home} aria-label={`${PROFILE.name}, ana sayfa`}>
+        <Image src={wordmark} alt="beyda.dev" priority sizes="140px" />
       </Link>
       <nav aria-label="Ana gezinme">
         <ul>

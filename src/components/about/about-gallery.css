@@ -1,0 +1,475 @@
+/* Hakkımda · neoklasik galeri. Önek .cl-; token'lar .imm-root'tan (açık, sitenin paleti). */
+
+.ag-root {
+  position: relative;
+}
+/* Sticky sahne: sayfa boyunca ekranda kalır; bölümler üstünden akar. */
+.ag-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+  z-index: 0;
+}
+.ag-flow {
+  position: relative;
+  z-index: 2;
+  margin-top: -100vh;
+  margin-top: -100svh;
+  pointer-events: none; /* fare/dokunma sahneye geçer; yalnızca kartlar tutar */
+}
+.ag-sec {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.6rem;
+  padding: calc(var(--nav-h) + 4vh) var(--gutter) 10vh;
+  pointer-events: none;
+}
+.ag-hero {
+  justify-content: flex-start;
+  padding-top: calc(var(--nav-h) + 6vh);
+  max-width: 34rem;
+}
+.ag-cue {
+  margin: 0.8rem 0 0;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--imm-ink-3);
+}
+.ag-act {
+  max-width: 30rem;
+}
+.ag-act-num {
+  margin: 0 0 0.2rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  color: var(--imm-accent-ink);
+}
+.ag-act-title {
+  margin: 0 0 0.5rem;
+  font-size: clamp(3rem, 7vw, 6rem);
+  font-weight: normal;
+  font-variation-settings: "wght" 760, "opsz" 40;
+  letter-spacing: -0.045em;
+  line-height: 0.95;
+  text-shadow: 0 0 22px var(--imm-bg);
+}
+.ag-act-def {
+  margin: 0;
+  font-size: 1.1rem;
+  line-height: 1.4;
+  color: var(--imm-ink);
+  text-shadow: 0 0 16px var(--imm-bg);
+}
+.ag-card {
+  pointer-events: auto;
+  width: min(27rem, 100%);
+  padding: 1.15rem 1.35rem 1.35rem;
+  border-radius: 22px;
+  background: color-mix(in srgb, var(--imm-bg) 90%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow:
+    inset 0 0 0 1px var(--imm-line),
+    inset 4px 0 0 var(--p-rose),
+    0 30px 60px -36px color-mix(in srgb, var(--imm-ink) 55%, transparent);
+}
+.ag-close {
+  min-height: 80vh;
+  min-height: 80svh;
+}
+.cl-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(60% 55% at 72% 38%, rgba(247, 200, 211, 0.5), transparent 70%),
+    radial-gradient(70% 60% at 14% 8%, rgba(169, 183, 198, 0.4), transparent 70%),
+    radial-gradient(90% 70% at 50% 120%, rgba(168, 181, 138, 0.3), transparent 60%),
+    var(--imm-bg);
+}
+.cl-host,
+.cl-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.cl-host {
+  touch-action: pan-y;
+  cursor: grab;
+}
+.cl-host.is-grab {
+  cursor: grabbing;
+}
+.cl-canvas {
+  opacity: 0;
+  transition: opacity 1.6s ease;
+}
+.ag-stage[data-ready="true"] .cl-canvas {
+  opacity: 1;
+}
+
+/* ---- Başlık ve düğme ---- */
+.cl-h1 {
+  margin: 0 0 1rem;
+  font-size: clamp(3rem, 7.5vw, 6.6rem);
+  font-weight: normal;
+  font-variation-settings: "wght" 760, "opsz" 40;
+  letter-spacing: -0.045em;
+  line-height: 0.95;
+  text-shadow: 0 0 22px var(--imm-bg);
+}
+.cl-lead {
+  margin: 0 0 1.1rem;
+  font-size: clamp(1.05rem, 1.5vw, 1.3rem);
+  line-height: 1.4;
+  color: var(--imm-ink);
+  text-shadow: 0 0 16px var(--imm-bg);
+}
+.cl-start {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+  padding: 0.8rem 1.25rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--imm-ink);
+  color: var(--imm-bg);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.cl-start:hover {
+  background: var(--imm-accent-ink);
+}
+
+/* ---- İşaretler ---- */
+.cl-marks {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+}
+.cl-mark {
+  position: absolute;
+  left: -22px;
+  top: -22px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  will-change: transform;
+}
+.cl-mark[data-on="1"] {
+  opacity: 1;
+  pointer-events: auto;
+}
+.cl-mark-dot,
+.cl-mark-ring {
+  position: absolute;
+  border-radius: 50%;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+}
+.cl-mark-dot {
+  width: 9px;
+  height: 9px;
+  background: var(--p-rose);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--p-rose) 25%, transparent);
+}
+.cl-mark-ring {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--p-midnight);
+  opacity: 0.55;
+  animation: cl-pulse 2.8s ease-in-out infinite;
+}
+.cl-mark:hover .cl-mark-ring,
+.cl-mark:focus-visible .cl-mark-ring,
+.cl-mark[data-active="true"] .cl-mark-ring {
+  border-color: var(--p-rose);
+  opacity: 1;
+  width: 44px;
+  height: 44px;
+  animation: none;
+}
+@keyframes cl-pulse {
+  50% {
+    transform: scale(1.35);
+    opacity: 0.2;
+  }
+}
+.cl-mark-box {
+  position: absolute;
+  left: 48px;
+  top: -12px;
+  display: grid;
+  gap: 0.1rem;
+  padding: 0.38rem 0.7rem 0.45rem;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--imm-bg) 90%, transparent);
+  box-shadow: inset 0 0 0 1px var(--imm-line);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  text-align: left;
+  white-space: nowrap;
+  opacity: 0;
+  translate: -6px 0;
+  transition:
+    opacity 0.35s ease,
+    translate 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.cl-mark-box b {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--imm-accent-ink);
+}
+.cl-mark-box span {
+  font-size: 0.98rem;
+  color: var(--imm-ink);
+}
+.cl-mark:hover .cl-mark-box,
+.cl-mark:focus-visible .cl-mark-box {
+  opacity: 1;
+  translate: 0 0;
+}
+.cl-mark:focus-visible {
+  outline: none;
+}
+
+/* ---- Kart içeriği ---- */
+.cl-kicker {
+  margin: 0 0 0.5rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--imm-accent-ink);
+}
+.cl-kicker em {
+  display: block;
+  margin-top: 0.15rem;
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-style: normal;
+  font-size: 0.82rem;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--imm-ink-2);
+}
+.cl-title {
+  margin: 0.4rem 0 0.7rem;
+  font-size: clamp(1.9rem, 3vw, 2.6rem);
+  font-weight: normal;
+  font-variation-settings: "wght" 740, "opsz" 40;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+.cl-title:focus {
+  outline: none;
+}
+.cl-p {
+  margin: 0 0 0.8rem;
+  font-size: 0.98rem;
+  line-height: 1.55;
+  color: var(--imm-ink-2);
+}
+.cl-list {
+  margin: 0 0 0.8rem;
+  padding-left: 1.1rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--imm-ink-2);
+}
+.cl-qs {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0.4rem 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.86rem;
+  line-height: 1.4;
+  color: var(--imm-ink-2);
+}
+.cl-qs b {
+  display: block;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--imm-accent-ink);
+}
+.cl-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.3rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.cl-chips li {
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid var(--imm-line);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.68rem;
+  color: var(--imm-ink-2);
+}
+.cl-note {
+  margin: 0.9rem 0 0;
+  padding-left: 0.8rem;
+  border-left: 2px solid var(--imm-accent);
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--imm-ink);
+}
+.cl-link {
+  display: inline-block;
+  margin-top: 0.9rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.74rem;
+  letter-spacing: 0.06em;
+  color: var(--imm-accent-ink);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* ---- Perde rayı ---- */
+.cl-rail {
+  position: absolute;
+  z-index: 26;
+  left: 0;
+  right: 0;
+  bottom: clamp(1rem, 3.2vh, 1.8rem);
+  display: flex;
+  justify-content: center;
+  padding: 0 var(--gutter);
+  pointer-events: none;
+}
+.cl-rail ul {
+  display: flex;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0.3rem;
+  list-style: none;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--imm-bg) 86%, transparent);
+  box-shadow: inset 0 0 0 1px var(--imm-line);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  pointer-events: auto;
+}
+.cl-rail button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.6rem;
+  padding: 0 1rem;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  color: var(--imm-ink-2);
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+.cl-rail button:hover,
+.cl-rail button[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--p-blush) 55%, transparent);
+  color: var(--imm-ink);
+}
+.cl-rail button:focus-visible {
+  outline: 2px solid var(--imm-accent);
+  outline-offset: 2px;
+}
+.cl-rail-n {
+  color: var(--imm-accent-ink);
+}
+.cl-credit {
+  position: absolute;
+  z-index: 3;
+  right: var(--gutter);
+  bottom: 0.9rem;
+  margin: 0;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.06em;
+  color: var(--imm-ink-3);
+}
+
+@media (max-width: 767px) {
+  .ag-sec {
+    justify-content: flex-end;
+    gap: 1rem;
+    padding-bottom: 5vh;
+  }
+  .ag-hero {
+    justify-content: flex-start;
+  }
+  .ag-act {
+    max-width: none;
+  }
+  .ag-card {
+    width: 100%;
+    padding: 0.9rem 1.05rem 1rem;
+    border-radius: 20px;
+    background: color-mix(in srgb, var(--imm-bg) 84%, transparent);
+  }
+  .ag-card .cl-p {
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+  .ag-card .cl-qs {
+    font-size: 0.8rem;
+    gap: 0.35rem;
+  }
+  .ag-card .cl-title {
+    font-size: 1.7rem;
+  }
+  /* Dikey ekranda kaydırma gezinmedir; işaretler ve ray sahneyi kapatmasın. */
+  .ag-root .cl-mark,
+  .cl-rail,
+  .cl-credit,
+  .cl-kicker em {
+    display: none;
+  }
+  .ag-root[data-focus="true"] .cl-mark {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cl-canvas,
+  .cl-mark,
+  .cl-mark-box,
+  .cl-rail button {
+    transition: none;
+  }
+  .cl-mark-ring {
+    animation: none;
+  }
+}

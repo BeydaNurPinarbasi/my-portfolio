@@ -28,8 +28,14 @@
   color: inherit;
   text-decoration: none;
 }
-.st-nav-name {
-  color: var(--imm-ink);
+.st-nav-logo {
+  display: block;
+  line-height: 0;
+}
+.st-nav-logo img {
+  display: block;
+  width: auto;
+  height: 1.55rem;
 }
 .st-nav ul {
   display: flex;
@@ -128,6 +134,659 @@
   transform: none;
 }
 
+/* ---- Mimari etiketler (3D'ye bağlı) ----------------------------------------------------- */
+/* Konum her karede JS'ten transform ile gelir; burada yalnızca görünüm ve giriş/çıkış geçişleri. */
+.st-notes {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+.st-n {
+  position: absolute;
+  left: 0;
+  top: 0;
+  will-change: transform;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+}
+.st-n.is-on {
+  opacity: 1;
+}
+.st-n-dot {
+  position: absolute;
+  left: -4px;
+  top: -4px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--imm-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--imm-accent) 22%, transparent);
+}
+/* Kılavuz çizgi: noktadan künyeye eğik çizgi; açılırken çizilir. */
+.st-n-lead {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 50px;
+  height: 1px;
+  background: var(--imm-ink);
+  opacity: 0.55;
+  transform-origin: 0 0;
+  transform: rotate(-38deg) scaleX(0);
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) 0.05s;
+}
+.st-n.is-on .st-n-lead {
+  transform: rotate(-38deg) scaleX(1);
+}
+/* Sağ kenara yakın etiket: kılavuz çizgi sola-yukarı, künye noktanın solunda. */
+.st-n.is-flip .st-n-lead {
+  transform: rotate(-142deg) scaleX(0);
+}
+.st-n.is-flip.is-on .st-n-lead {
+  transform: rotate(-142deg) scaleX(1);
+}
+.st-n.is-flip .st-n-box {
+  left: auto;
+  right: 38px;
+}
+/* Üst kenara yakın: künye ve kılavuz çizgi aşağı açılır. */
+.st-n.is-low .st-n-lead {
+  transform: rotate(38deg) scaleX(0);
+}
+.st-n.is-low.is-on .st-n-lead {
+  transform: rotate(38deg) scaleX(1);
+}
+.st-n.is-low .st-n-box {
+  top: 22px;
+}
+.st-n.is-low.is-flip .st-n-lead {
+  transform: rotate(142deg) scaleX(0);
+}
+.st-n.is-low.is-flip.is-on .st-n-lead {
+  transform: rotate(142deg) scaleX(1);
+}
+.st-n-box {
+  position: absolute;
+  left: 38px;
+  top: -52px;
+  display: grid;
+  gap: 0.1rem;
+  padding: 0.38rem 0.6rem 0.42rem;
+  border: 1px solid var(--imm-line);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--imm-bg) 84%, transparent);
+  backdrop-filter: blur(4px);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.64rem;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  color: var(--imm-ink-2);
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 0.4s ease 0.18s,
+    transform 0.4s ease 0.18s;
+}
+.st-n.is-on .st-n-box {
+  opacity: 1;
+  transform: none;
+}
+.st-n-box b {
+  font-weight: 500;
+  color: var(--imm-accent-ink);
+}
+.st-n-title {
+  font-family: var(--font-display), system-ui, sans-serif;
+  font-size: 0.92rem;
+  font-variation-settings: "wght" 640, "opsz" 24;
+  letter-spacing: -0.01em;
+  color: var(--imm-ink);
+}
+/* Katmanlar: pasif katman yalnızca numarasını gösterir; aktif olan künyesini ve davranış dilini açar. */
+.st-n--layers:not([data-active="true"]) :is(.st-n-title, .st-n-detail) {
+  display: none;
+}
+.st-n--layers:not([data-active="true"]) .st-n-dot {
+  background: var(--imm-ink-3);
+  box-shadow: none;
+}
+.st-n--layers[data-active="true"] .st-n-title {
+  font-size: 1.15rem;
+}
+.st-n--layers[data-active="true"] .st-n-dot,
+.st-n--nest .st-n-dot {
+  animation: st-ping 1.8s ease-out infinite;
+}
+@keyframes st-ping {
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--imm-accent) 45%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 12px transparent;
+  }
+}
+/* Sorgulayıcı yaklaşım: ölçü etiketi gibi, harf büyük. */
+.st-n--inquiry .st-n-box {
+  grid-template-columns: auto auto;
+  align-items: baseline;
+  column-gap: 0.45rem;
+}
+.st-n--inquiry .st-n-box b {
+  font-size: 0.95rem;
+}
+
+/* Teknik okuma (HUD): bölüm kodu ve canlı kamera değerleri. */
+.st-hud {
+  position: absolute;
+  z-index: 2;
+  right: var(--gutter);
+  bottom: 1.2rem;
+  display: flex;
+  gap: 1.2rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  color: var(--imm-ink-3);
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+.st-root[data-ready="true"] .st-hud {
+  opacity: 1;
+}
+
+/* ---- Etkileşim (docs/interaction-architecture.md) ---------------------------------------- */
+/* Dokunmatik: dikey kaydırma ve yakınlaştırma tarayıcıda kalır; yalnızca yatay sürükleme bize gelir. */
+.st-root {
+  touch-action: pan-y pinch-zoom;
+}
+.st-root.is-dragging,
+.st-root.is-dragging * {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Hover künyesi: st-n ile aynı dil; imlece bağlı, vurgu çerçeveli, tıklanabilirse ipucu satırı. */
+.st-hv .st-n-box {
+  border-color: color-mix(in srgb, var(--cat, var(--imm-accent)) 70%, var(--imm-line));
+  box-shadow: inset 3px 0 0 var(--cat, var(--imm-accent));
+}
+.st-hv .st-n-dot {
+  animation: none;
+}
+.st-hv-hint {
+  font-style: normal;
+  color: var(--imm-accent-ink);
+}
+.st-hv-hint:empty {
+  display: none;
+}
+
+/* Sol metin vurgusu (3D hover ile çift yönlü). */
+.st-cap[data-hover="true"] {
+  color: var(--imm-ink);
+}
+.st-cap[data-hover="true"] .st-cap-idx {
+  background: color-mix(in srgb, var(--cat) 55%, transparent);
+  box-shadow: none;
+}
+.st-domain[data-hover="true"] {
+  background: color-mix(in srgb, var(--cat) 45%, var(--imm-bg));
+}
+
+/* Yetkinlik düğmesi: metin gibi görünür, odak modunun gerçek tetikleyicisi. */
+.st-cap-btn {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.7rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.st-cap-open {
+  display: none;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  color: var(--imm-accent-ink);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition:
+    opacity 0.25s ease,
+    transform 0.25s ease;
+}
+.st-root:is([data-tier="full"], [data-tier="lite"], [data-tier="static"]) .st-cap-open {
+  display: inline;
+}
+.st-cap-btn:hover .st-cap-open,
+.st-cap-btn:focus-visible .st-cap-open,
+.st-cap[data-hover="true"] .st-cap-open {
+  opacity: 1;
+  transform: none;
+}
+.st-root[data-tier="none"] .st-cap-btn,
+.st-root[data-tier="pending"] .st-cap-btn {
+  cursor: default;
+}
+
+/* Odak modunda bölüm metni geri çekilir; yerini odak paneli alır. */
+.st-root[data-focus="true"] .st-copy {
+  opacity: 0.1;
+  filter: blur(2px);
+  pointer-events: none;
+}
+.st-copy {
+  transition:
+    opacity 0.4s ease,
+    filter 0.4s ease;
+}
+
+/* Odak paneli (Motion for React ile giriş/çıkış). Masaüstü: sol altta kart. */
+.st-focus {
+  position: fixed;
+  z-index: 25;
+  left: var(--gutter);
+  bottom: clamp(1.2rem, 5vh, 3rem);
+  width: min(27rem, calc(100vw - 2 * var(--gutter)));
+  padding: 1.2rem 1.4rem 1.4rem;
+  border-radius: 22px;
+  background: color-mix(in srgb, var(--imm-bg) 90%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow:
+    inset 0 0 0 1px var(--imm-line),
+    inset 4px 0 0 var(--cat, var(--imm-accent)),
+    0 30px 60px -36px color-mix(in srgb, var(--imm-ink) 55%, transparent);
+}
+.st-focus-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.1rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+}
+.st-focus-back,
+.st-focus-step button {
+  border: 0;
+  background: none;
+  padding: 0.25rem 0;
+  color: var(--imm-accent-ink);
+  font: inherit;
+  cursor: pointer;
+}
+.st-focus-back kbd {
+  margin-left: 0.4rem;
+  padding: 0.05rem 0.35rem;
+  border-radius: 5px;
+  box-shadow: inset 0 0 0 1px var(--imm-line);
+  font: inherit;
+  font-size: 0.64rem;
+  color: var(--imm-ink-2);
+}
+.st-focus-step {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  color: var(--imm-ink-2);
+}
+.st-focus-step button {
+  padding: 0.25rem 0.45rem;
+  font-size: 0.95rem;
+}
+.st-focus-idx {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 0.5rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  color: var(--imm-ink-2);
+}
+.st-focus-title {
+  margin: 0 0 0.7rem;
+  font-size: clamp(2rem, 3.4vw, 3rem);
+  font-weight: normal;
+  font-variation-settings: "wght" 740, "opsz" 40;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+.st-focus-title:focus {
+  outline: none;
+}
+.st-focus-text {
+  margin: 0 0 0.9rem;
+  font-size: 1.02rem;
+  line-height: 1.55;
+  color: var(--imm-ink-2);
+}
+.st-focus-meta {
+  margin: 0 0 0.9rem;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.74rem;
+  line-height: 1.5;
+  color: var(--imm-ink-2);
+}
+.st-focus-meta b {
+  display: block;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--imm-accent-ink);
+}
+.st-focus-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.st-focus-chips li {
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid var(--imm-line);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.68rem;
+  color: var(--imm-ink-2);
+}
+
+/* Panel uzun içerikte (mikro dünya) ekrana sığmazsa kendi içinde kayar; sayfa scroll'u değişmez. */
+.st-focus {
+  max-height: calc(100svh - 2 * clamp(1.2rem, 5vh, 3rem));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+/* "Bir modülün içine gir": katman detayından ikinci seviyeye geçiş düğmesi. */
+.st-enter {
+  display: grid;
+  gap: 0.2rem;
+  width: 100%;
+  margin-top: 1rem;
+  padding: 0.85rem 1.1rem;
+  border: 0;
+  border-radius: 14px;
+  background: var(--imm-ink);
+  color: var(--imm-bg);
+  font: inherit;
+  font-size: 1rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+.st-enter:hover {
+  background: var(--imm-accent-ink);
+}
+.st-enter small {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.66rem;
+  letter-spacing: 0.06em;
+  opacity: 0.75;
+}
+
+/* Mikro dünya: akış göstergesi, servis listesi, kavram kartı. */
+.st-legend {
+  display: grid;
+  gap: 0.25rem;
+  margin: 0 0 0.9rem;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.7rem;
+  line-height: 1.4;
+  color: var(--imm-ink-2);
+}
+.st-legend b {
+  font-weight: 500;
+  color: var(--imm-accent-ink);
+}
+.st-svc {
+  display: grid;
+  gap: 0.4rem;
+  margin: 0 0 0.9rem;
+  padding: 0;
+  list-style: none;
+}
+.st-svc-btn {
+  display: grid;
+  grid-template-columns: 2.1rem 1fr auto;
+  align-items: baseline;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid var(--imm-line);
+  border-radius: 12px;
+  background: transparent;
+  color: var(--imm-ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color 0.25s ease,
+    border-color 0.25s ease;
+}
+.st-svc-btn:hover {
+  background: color-mix(in srgb, var(--cat) 22%, var(--imm-bg));
+}
+.st-svc-btn[aria-pressed="true"] {
+  background: color-mix(in srgb, var(--cat) 38%, var(--imm-bg));
+  border-color: var(--imm-accent);
+}
+.st-svc-idx {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.7rem;
+  color: var(--imm-ink-2);
+}
+.st-svc-name {
+  font-size: 1.02rem;
+  font-variation-settings: "wght" 620, "opsz" 24;
+}
+.st-svc-role {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.66rem;
+  color: var(--imm-ink-2);
+}
+.st-concept {
+  margin: 0 0 0.9rem;
+  padding: 0.9rem 1rem 1rem;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--cat) 28%, var(--imm-bg));
+  box-shadow: inset 3px 0 0 var(--cat);
+}
+.st-concept-title {
+  margin: 0 0 0.35rem;
+  font-size: 1.15rem;
+  font-variation-settings: "wght" 700, "opsz" 28;
+}
+.st-concept .st-focus-text {
+  margin-bottom: 0.7rem;
+}
+.st-micro-note {
+  margin: 0;
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.64rem;
+  line-height: 1.5;
+  color: var(--imm-ink-3);
+}
+.st-text-micro {
+  margin-top: 1.1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--imm-line);
+}
+
+/* Mikro dünya servis etiketleri: pasif etiket yalnızca numara + ad, hover/seçimde rol satırı açılır. */
+.st-n--micro:not([data-active="true"]) .st-n-detail {
+  display: none;
+}
+.st-n--micro[data-active="true"] .st-n-title {
+  font-size: 1.1rem;
+}
+.st-n--micro[data-active="true"] .st-n-dot {
+  animation: st-ping 1.8s ease-out infinite;
+}
+
+/* Ölçüm kutusu: yalnızca ?perf ile eklenir. */
+.st-perf {
+  position: fixed;
+  z-index: 200;
+  left: 0.6rem;
+  bottom: 0.6rem;
+  max-width: calc(100vw - 1.2rem);
+  padding: 0.35rem 0.6rem;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--imm-ink) 88%, transparent);
+  color: var(--imm-bg);
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.62rem;
+  line-height: 1.4;
+  pointer-events: none;
+}
+
+/* WebGL yok: yetkinlik düğmesinin "aç →" ipucu da görünür (panel metin olarak açılır). */
+.st-root[data-tier="none"] .st-cap-open {
+  display: inline;
+}
+
+/* Özel imleç: nokta + ince halka. Konum GSAP'de (dış eleman), görünüm CSS/Motion'da (iç eleman). */
+.st-cursor {
+  /* Sıfır boyutlu kök: çocuklar kendi başlarına fixed. Tam ekran bir kök, retina'da ~5 MP'lik ayrı bir
+     bileşik katman oluşturup ilk görünüşte yeniden çizdiriyordu (ölçüldü). */
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.st-cursor[data-seen="true"] {
+  opacity: 1;
+}
+.st-cursor[data-mode="native"] {
+  opacity: 0 !important;
+}
+.st-cursor-pos {
+  position: fixed;
+  left: 0;
+  top: 0;
+  will-change: transform;
+}
+.st-cursor-dot {
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  background: var(--imm-ink);
+  transition:
+    transform 0.25s ease,
+    opacity 0.2s ease,
+    background-color 0.25s ease;
+}
+.st-cursor-ring {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  margin: -15px 0 0 -15px;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--imm-ink) 55%, transparent);
+  transition:
+    width 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
+    height 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
+    margin 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
+    border-radius 0.3s ease,
+    background-color 0.3s ease,
+    border-color 0.3s ease;
+}
+.st-cursor-label {
+  font-family: var(--font-mono), ui-monospace, monospace;
+  font-size: 0.66rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+  color: var(--imm-ink);
+}
+/* hover: bağlantı/düğme. Halka büyür, nokta kaybolur. */
+.st-cursor[data-mode="hover"] .st-cursor-ring {
+  width: 46px;
+  height: 46px;
+  margin: -23px 0 0 -23px;
+  background: color-mix(in srgb, var(--imm-wash) 55%, transparent);
+  border-color: var(--imm-accent);
+}
+.st-cursor[data-mode="hover"] .st-cursor-dot {
+  opacity: 0;
+}
+/* explore: tıklanamaz nesne. İnce dolgu + "keşfet". */
+.st-cursor[data-mode="explore"] .st-cursor-ring {
+  width: 62px;
+  height: 62px;
+  margin: -31px 0 0 -31px;
+  background: color-mix(in srgb, var(--imm-bg) 60%, transparent);
+}
+/* open: tıklanabilir nesne. Vurgu rengi halka + "aç". */
+.st-cursor[data-mode="open"] .st-cursor-ring {
+  width: 64px;
+  height: 64px;
+  margin: -32px 0 0 -32px;
+  background: color-mix(in srgb, var(--imm-wash) 70%, transparent);
+  border-color: var(--imm-accent);
+}
+.st-cursor[data-mode="open"] .st-cursor-dot,
+.st-cursor[data-mode="explore"] .st-cursor-dot {
+  opacity: 0; /* etiket halkanın içinde okunur; nokta çakışmasın */
+}
+/* drag: halka yatay oval, "sürükle". */
+.st-cursor[data-mode="drag"] .st-cursor-ring {
+  width: 84px;
+  height: 40px;
+  margin: -20px 0 0 -42px;
+  border-radius: 999px;
+  border-color: var(--imm-ink);
+}
+.st-cursor[data-mode="drag"] .st-cursor-dot {
+  opacity: 0;
+}
+/* close: odak modunda arka plan. Halkanın içinde ×. */
+.st-cursor[data-mode="close"] .st-cursor-ring {
+  width: 50px;
+  height: 50px;
+  margin: -25px 0 0 -25px;
+  border-color: var(--imm-accent);
+}
+.st-cursor[data-mode="close"] .st-cursor-label {
+  font-size: 1rem;
+  color: var(--imm-accent-ink);
+}
+.st-cursor[data-mode="close"] .st-cursor-dot {
+  opacity: 0;
+}
+/* Özel imleç yalnızca sahne arka planı ve bağlantı/düğmelerde yerel imleci gizler; metin ve form alanlarında yerel kalır. */
+html.st-cursor-on .st-root,
+html.st-cursor-on .st-root a,
+html.st-cursor-on .st-root button,
+html.st-cursor-on .st-nav a,
+html.st-cursor-on .st-focus button {
+  cursor: none;
+}
+html.st-cursor-on .st-copy,
+html.st-cursor-on .st-copy *:not(a):not(button),
+html.st-cursor-on .st-focus,
+html.st-cursor-on input,
+html.st-cursor-on textarea {
+  cursor: auto;
+}
+
 /* ---- Perde rayı ------------------------------------------------------------------------- */
 .st-rail {
   position: fixed;
@@ -158,6 +817,16 @@
 }
 .st-rail li {
   transition: color 0.4s ease;
+}
+/* Kompakt ray: yalnızca aktif perdenin adı görünür; 3D etiketlerin üstünü kapatmasın. */
+.st-rail-t {
+  font-style: normal;
+  display: none;
+}
+.st-root[data-pillar="merak"] .st-rail [data-pillar="merak"] .st-rail-t,
+.st-root[data-pillar="uretim"] .st-rail [data-pillar="uretim"] .st-rail-t,
+.st-root[data-pillar="sorumluluk"] .st-rail [data-pillar="sorumluluk"] .st-rail-t {
+  display: inline;
 }
 .st-rail span {
   display: inline-block;
@@ -616,7 +1285,11 @@
   .st-nav ul {
     gap: 0.8rem;
   }
-  .st-nav-name {
+  /* Logo mobilde de görünür; ana sayfa bağlantısı zaten logo olduğundan menüdeki "Ana sayfa" gizlenir (yer kazanır). */
+  .st-nav-logo img {
+    height: 1.25rem;
+  }
+  .st-nav ul li:first-child {
     display: none;
   }
   .st-stage::after {
@@ -630,6 +1303,73 @@
   }
   .st-rail {
     display: none;
+  }
+  /* Odak paneli mobilde alt sayfa (bottom sheet): geniş dokunma hedefleri, 3D üst yarıda kalır. */
+  .st-focus {
+    left: 0.6rem;
+    right: 0.6rem;
+    bottom: 0.6rem;
+    width: auto;
+    padding: 1rem 1.1rem 1.2rem;
+  }
+  .st-focus-back,
+  .st-focus-step button {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .st-focus-back kbd {
+    display: none;
+  }
+  /* Mikro dünya mobilde: bölüm yarım ekranı geçmesin, 3D üstte görünür kalsın. Servisler 2×2 dokunma düğmesi. */
+  .st-focus {
+    max-height: 46svh;
+  }
+  .st-micro-intro,
+  .st-legend {
+    display: none;
+  }
+  .st-svc {
+    grid-template-columns: 1fr 1fr;
+    margin-bottom: 0.7rem;
+  }
+  .st-svc-btn {
+    grid-template-columns: 1.5rem 1fr;
+    min-height: 44px;
+    padding: 0.5rem 0.65rem;
+  }
+  .st-svc-name {
+    font-size: 0.92rem;
+  }
+  .st-svc-role {
+    display: none;
+  }
+  .st-concept {
+    padding: 0.75rem 0.85rem 0.85rem;
+  }
+  .st-concept .st-focus-text {
+    font-size: 0.92rem;
+    margin-bottom: 0.5rem;
+  }
+  .st-enter {
+    min-height: 48px;
+  }
+  .st-focus-title {
+    font-size: 2.1rem;
+  }
+  .st-hud {
+    display: none;
+  }
+  /* Dar ekranda pasif mikro dünya etiketleri yalnızca numara gösterir (adlar paneldeki düğmelerde); aktif etiket tam. */
+  .st-n--micro:not([data-active="true"]) .st-n-title {
+    display: none;
+  }
+  .st-n-box {
+    left: 30px;
+    top: -44px;
+  }
+  .st-n-title {
+    font-size: 0.82rem;
   }
   .st-h1 {
     font-size: 7.4vw;
@@ -738,6 +1478,18 @@
   .st-cue,
   .st-cue i {
     animation: none;
+  }
+  .st-n,
+  .st-n-lead,
+  .st-n-box {
+    transition: none;
+  }
+  .st-copy,
+  .st-cap-open {
+    transition: none;
+  }
+  .st-n-dot {
+    animation: none !important;
   }
   .st-cap .st-cap-desc {
     display: block;

@@ -60,6 +60,12 @@ export const FIELD_NODES: readonly [number, number, number][] = Array.from({ len
 const FIELD_SCALE = 0.34; // küme = katman deseninin minyatürü (desen okunur kalsın)
 const CORE_SCALE = 0.34;
 
+/** Disk biçiminde i. dilimin orta noktası (yapı-yerel): etiket ve odak kamerası hedefi. */
+export function sectorPoint(i: number): [number, number, number] {
+  const ang = (i + 0.5) * ((Math.PI * 2) / LAYER_COUNT);
+  return [Math.cos(ang) * 3.3, 0.35, Math.sin(ang) * 3.3];
+}
+
 // Gelecek: beş katman tek dairesel zeminde eşit dilimler (ortak, dengeli yapı).
 const SECTOR = (Math.PI * 2) / LAYER_COUNT;
 const FORM_R0 = 1.1;

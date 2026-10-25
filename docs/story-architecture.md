@@ -1,6 +1,6 @@
 # Kişisel hikâye: içerik mimarisi ve 3D koreografi
 
-> Durum: izole prototip (`/lab/home`, `/lab/about`). Production ana sayfa değişmedi.
+> Durum: gerçek rotalarda (`/`, `/about`). Kamera ve sahne davranışlarının ayrıntısı: `docs/motion-direction.md`.
 > Güvenlik çalışması (Phase 0) ayrı ve öncelikli bir iş olarak takip edilir; bu doküman onu kapsamaz.
 
 ## 1. Omurga: Merak → Üretim → Sorumluluk
@@ -28,7 +28,7 @@ morph hedefleri olarak hesaplanır: `stack` (katmanlı), `field` (takımyıldız
 | 02 Merakın Peşinde | Katmanlar bilgi alanı kümelerine dağılır; merkezde küçük yazılım çekirdeği, aralarında ışık akan bağlar | Alanların birbiriyle ilişkisi; bilgi merkezden dışa paylaşılır | Alan düğmeleri; üzerine gelince ilgili küme ve bağları öne çıkar |
 | 03 Üretim | Kümeler sıkı bir yapıya toplanır, içinden yukarı akan ışık darbeleri geçer | Fikir, çalışan bir sisteme dönüşür | Kelimeler sırayla kalınlaşır (scrub) |
 | 04 Bütünsel düşünme | Katmanlar ayrılır, tek tek aktifleşir, sonra yeniden birleşir | Parçalar ve bütün | Yetkinlik listesi adım adım; birleşmede kesişen konular yanar |
-| 05 Sorgulayıcı yaklaşım | Bir katman yapıdan kalkar, diğerleri soluklaşır | Bir tercihi yerinden çıkarıp incelemek | Gerekçe / Risk / Alternatif sütunları çizgiyle sırayla açılır |
+| 05 Sorgulayıcı yaklaşım | Bir katman raf çekmecesi gibi yapıdan kayar; blueprint görünümü, ölçü etiketleri | Bir tercihi yerinden çıkarıp çizim masasında incelemek | Gerekçe / Risk / Alternatif sütunları çizgiyle sırayla açılır |
 | 06 Çalışma biçimim | Yapı sakinleşir, kenara çekilir; ışık yavaşlar | Kontrollü, özenli çalışma | Değer kelimeleri merkezden geçerken kalınlaşır (kinetik) |
 | 07 Gelecek | Beş katman tek bir dairesel zeminde eşit dilimlere dönüşür | Ortak, dengeli bir yapı | Metin bulanıktan nete (gelecek netleşiyor) |
 
