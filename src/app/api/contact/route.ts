@@ -74,7 +74,7 @@ export async function POST(req: Request) {
 
     await transporter.sendMail({
       from: process.env.EMAIL_USER,
-      to: "beydanur.pinarbasi@gmail.com",
+      to: "beydanurpinarbasi@veraporta.com",
       replyTo: email,
       subject: `beyda.dev sitenden mesaj var - ${name}`,
       text: `Gönderen: ${name} (${email})\nTelefon: ${phone}\n\nMesaj:\n${message}`,
