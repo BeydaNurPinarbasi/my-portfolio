@@ -64,6 +64,12 @@ export async function POST(req: Request) {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
+      // Varsayılan zaman aşımları dakikalarca sürebilir; SMTP'ye ulaşılamazsa hızlı hata ver.
+      // VPS/Docker ortamlarında IPv6 yolu olmayınca smtp.gmail.com'a bağlantı sessizce takılır; IPv4'e zorla.
+      ...({ family: 4 } as object), // @types/nodemailer 'family' alanını bilmiyor; çalışma zamanında geçerli
+      connectionTimeout: 10_000,
+      greetingTimeout: 10_000,
+      socketTimeout: 15_000,
     });
 
     await transporter.sendMail({

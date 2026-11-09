@@ -67,6 +67,7 @@ export default function ContactForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...values, message: fullMessage(), website }),
+        signal: AbortSignal.timeout(25_000), // sunucu yanıtsız kalırsa "Gönderiliyor…" sonsuza kadar sürmesin
       });
       const data = (await res.json().catch(() => ({}))) as { error?: string };
       if (res.ok) {
