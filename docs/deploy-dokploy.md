@@ -1,7 +1,7 @@
 # Dokploy'a kurulum
 
 Uygulama tek bir Docker imajı olarak çalışır (`Dockerfile`, Next.js `standalone` çıktısı).
-Yerelde test edildi: imaj build, sayfalar, proxy arkası güvenlik, volume kalıcılığı.
+Yerelde test edildi: imaj build, sayfalar, proxy arkası güvenlik, veritabanı bağlantısı.
 
 ## 1. Uygulama
 
@@ -9,26 +9,17 @@ Yerelde test edildi: imaj build, sayfalar, proxy arkası güvenlik, volume kalı
 2. **Build Type: Dockerfile** (Nixpacks değil). Dockerfile yolu: `Dockerfile`, context: `.`
 3. **Port: 3000**.
 
-## 2. Kalıcı veri (zorunlu)
+## 2. Veritabanı (zorunlu)
 
-Blog yazıları `data/blog.json` dosyasında. Konteyner yeniden oluşturulunca kaybolmasın diye:
-
-- **Mounts → Volume mount** (named volume, bind mount değil)
-  - Volume adı: `beyda-data`
-  - Mount path: `/app/data`
-
-İlk açılışta volume boşsa imajdaki yazılar kopyalanır; sonra **asla üzerine yazılmaz**. Admin panelinden
-eklenen yazılar volume'da yaşar, yeni deploy'larda korunur.
-
-Bind mount kullanılırsa klasör `app` kullanıcısına (uid 100) yazılabilir olmalı; değilse site çalışır ama
-admin'den kayıt 503 döner.
-
-**Yedek:** `beyda-data` volume'unu düzenli yedekleyin (Dokploy → Volume Backups ya da sunucuda `docker run --rm -v beyda-data:/d -v $PWD:/b alpine tar czf /b/blog.tgz -C /d .`).
+Blog yazıları ve iletişim formu mesajları **PostgreSQL**'de tutulur; konteynerde kalıcı volume gerekmez.
+Tablolar (`blog_posts`, `contact_messages`) ilk kullanımda otomatik oluşur. Yedeği veritabanı sağlayıcısı
+düzeyinde alın (ör. `pg_dump`). Veritabanı sunucusu Dokploy sunucusundan erişilebilir olmalı.
 
 ## 3. Ortam değişkenleri (Environment)
 
 | Değişken | Değer | Not |
 |---|---|---|
+| `DATABASE` | `postgresql://kullanici:sifre@sunucu:5432/veritabani` | **Zorunlu.** Blog ve mesajlar. Başına/sonuna boşluk koymayın. |
 | `SITE_URL` | `https://beyda.dev` | **Zorunlu.** CSRF (Origin) kontrolü bunu kullanır. Proxy arkasında bu olmadan form ve admin girişi 403 verir. www da kullanılacaksa: `https://beyda.dev,https://www.beyda.dev` |
 | `TRUSTED_PROXY_HOPS` | `1` | Önünde yalnızca Traefik varsa 1. Cloudflare proxy (turuncu bulut) da açıksa `2`. |
 | `ADMIN_EMAIL` | admin e-postası | |

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { randomUUID } from "crypto";
 import { requireAdmin } from "@/lib/auth/guard";
-import { mutatePosts, readPosts, StorageUnavailableError, toPublicPost, type BlogPost } from "@/lib/blog/store";
+import { createPost, deletePost, readPosts, StorageUnavailableError, toPublicPost, updatePost } from "@/lib/blog/store";
 import { parseBlogInput } from "@/lib/blog/validate";
 
 // GET (public): SADECE yayınlanmış yazılar. Taslaklar yalnızca /api/admin/blog'dan,
@@ -38,20 +38,13 @@ export async function POST(req: Request) {
   const input = parsed.value;
 
   try {
-    const created = await mutatePosts<BlogPost | null>((posts) => {
-      if (posts.some((p) => p.slug === input.slug)) return { posts, result: null };
-      const now = new Date().toISOString();
-      const post = {
-        id: randomUUID(),
-        title: input.title!,
-        slug: input.slug!,
-        content: input.content!,
-        excerpt: input.excerpt || input.content!.slice(0, 150) + "...",
-        published: input.published ?? false,
-        createdAt: now,
-        updatedAt: now,
-      };
-      return { posts: [...posts, post], result: post };
+    const created = await createPost({
+      id: randomUUID(),
+      title: input.title!,
+      slug: input.slug!,
+      content: input.content!,
+      excerpt: input.excerpt || input.content!.slice(0, 150) + "...",
+      published: input.published ?? false,
     });
     if (!created) return NextResponse.json({ error: "Bu slug zaten kullanılıyor." }, { status: 409 });
     return NextResponse.json(created, { status: 201 });
@@ -79,17 +72,7 @@ export async function PUT(req: Request) {
   const input = parsed.value;
 
   try {
-    const outcome = await mutatePosts<BlogPost | "notfound" | "conflict">((posts) => {
-      const index = posts.findIndex((p) => p.id === id);
-      if (index === -1) return { posts, result: "notfound" };
-      if (input.slug && posts.some((p) => p.slug === input.slug && p.id !== id)) {
-        return { posts, result: "conflict" };
-      }
-      const updated = { ...posts[index], ...input, updatedAt: new Date().toISOString() };
-      const next = [...posts];
-      next[index] = updated;
-      return { posts: next, result: updated };
-    });
+    const outcome = await updatePost(id, input);
     if (outcome === "notfound") return NextResponse.json({ error: "Blog yazısı bulunamadı" }, { status: 404 });
     if (outcome === "conflict") return NextResponse.json({ error: "Bu slug zaten kullanılıyor." }, { status: 409 });
     return NextResponse.json(outcome);
@@ -107,10 +90,7 @@ export async function DELETE(req: Request) {
   if (!id) return NextResponse.json({ error: "ID gerekli" }, { status: 400 });
 
   try {
-    const removed = await mutatePosts((posts) => {
-      const next = posts.filter((p) => p.id !== id);
-      return { posts: next, result: next.length !== posts.length };
-    });
+    const removed = await deletePost(id);
     if (!removed) return NextResponse.json({ error: "Blog yazısı bulunamadı" }, { status: 404 });
     return NextResponse.json({ success: true });
   } catch (err) {

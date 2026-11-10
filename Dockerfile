@@ -29,19 +29,10 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=app:app /app/.next/standalone ./
 COPY --from=builder --chown=app:app /app/.next/static ./.next/static
 
-# Blog verisi kalıcı volume'da (/app/data). İmajdaki veri yalnızca TOHUM: volume boşsa ilk açılışta
-# kopyalanır, doluysa asla üzerine yazılmaz (admin panelinden yapılan değişiklikler korunur).
-COPY --from=builder --chown=app:app /app/data ./data-seed
-RUN mkdir -p /app/data && chown app:app /app/data
-COPY --chown=app:app docker-entrypoint.sh ./
-RUN chmod +x docker-entrypoint.sh
-
 USER app
 EXPOSE 3000
-VOLUME ["/app/data"]
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
   CMD wget -qO- http://127.0.0.1:3000/robots.txt >/dev/null || exit 1
 
-ENTRYPOINT ["./docker-entrypoint.sh"]
 CMD ["node", "server.js"]
