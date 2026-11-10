@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { isSameOrigin } from "@/lib/http/origin";
 import nodemailer from "nodemailer";
 import { clientIp, rateLimit } from "@/lib/auth/rate-limit";
-import { insertMessage } from "@/lib/db/messages";
+import { insertMessage, setEmailStatus } from "@/lib/db/messages";
 
 export const runtime = "nodejs";
 
@@ -60,8 +60,9 @@ export async function POST(req: Request) {
 
   // 1) Önce veritabanına kaydet: e-posta başarısız olsa bile mesaj admin panelinde kalır.
   let saved = false;
+  let messageId: string | null = null;
   try {
-    await insertMessage({ name, email, phone, topic, message });
+    messageId = await insertMessage({ name, email, phone, topic, message });
     saved = true;
   } catch (error) {
     console.error("[contact] veritabanına kaydedilemedi:", error);
@@ -69,8 +70,10 @@ export async function POST(req: Request) {
 
   // 2) E-posta bildirimi. Ayarlar yoksa ya da gönderim başarısızsa ve kayıt yapılmışsa yine başarı say.
   let emailed = false;
+  let emailError = "";
   if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
     console.error("[contact] EMAIL_USER / EMAIL_PASS tanımlı değil.");
+    emailError = "EMAIL_USER / EMAIL_PASS ortam değişkenleri tanımlı değil.";
   } else {
     try {
       const transporter = nodemailer.createTransport({
@@ -94,8 +97,13 @@ export async function POST(req: Request) {
       emailed = true;
     } catch (error) {
       console.error("E-posta gönderme hatası:", error);
+      const e = error as { code?: string; responseCode?: number; message?: string };
+      emailError = [e.code, e.responseCode, e.message].filter(Boolean).join(" · ");
     }
   }
+
+  // Sonucu kayda yaz: e-posta gitmediyse neden admin panelinde görünür (sır içermez).
+  if (messageId) await setEmailStatus(messageId, emailed, emailError).catch(() => undefined);
 
   if (saved || emailed) {
     return NextResponse.json({ success: "Mesajınız alındı." }, { status: 200 });

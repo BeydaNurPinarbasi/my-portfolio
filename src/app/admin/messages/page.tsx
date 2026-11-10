@@ -14,6 +14,8 @@ interface Message {
   message: string;
   isRead: boolean;
   createdAt: string;
+  emailSent: boolean | null;
+  emailError: string | null;
 }
 
 const formatDate = (iso: string) =>
@@ -97,6 +99,9 @@ export default function AdminMessages() {
                         </a>
                       </p>
                       <p className="text-xs text-muted-foreground">{formatDate(m.createdAt)}</p>
+                      {m.emailSent === false && (
+                        <p className="text-xs text-red-600">E-posta bildirimi gitmedi: {m.emailError || "neden bilinmiyor"}</p>
+                      )}
                     </div>
                     <div className="flex gap-1">
                       <Button variant="ghost" size="icon" title={m.isRead ? "Okunmadı yap" : "Okundu yap"} onClick={() => toggleRead(m)}>

@@ -9,6 +9,9 @@ export interface ContactMessage {
   message: string;
   isRead: boolean;
   createdAt: string;
+  /** null: bildirim denenmedi/bilinmiyor (eski kayıt) */
+  emailSent: boolean | null;
+  emailError: string | null;
 }
 
 interface Row {
@@ -20,6 +23,8 @@ interface Row {
   message: string;
   is_read: boolean;
   created_at: Date;
+  email_sent: boolean | null;
+  email_error: string | null;
 }
 
 const toMessage = (r: Row): ContactMessage => ({
@@ -31,14 +36,28 @@ const toMessage = (r: Row): ContactMessage => ({
   message: r.message,
   isRead: r.is_read,
   createdAt: r.created_at.toISOString(),
+  emailSent: r.email_sent,
+  emailError: r.email_error,
 });
 
-export async function insertMessage(m: Pick<ContactMessage, "name" | "email" | "phone" | "topic" | "message">) {
+export async function insertMessage(
+  m: Pick<ContactMessage, "name" | "email" | "phone" | "topic" | "message">
+): Promise<string> {
   await ensureSchema();
-  await getPool().query(
-    "INSERT INTO contact_messages (name, email, phone, topic, message) VALUES ($1, $2, $3, $4, $5)",
+  const r = await getPool().query<{ id: string }>(
+    "INSERT INTO contact_messages (name, email, phone, topic, message) VALUES ($1, $2, $3, $4, $5) RETURNING id",
     [m.name, m.email, m.phone, m.topic, m.message]
   );
+  return String(r.rows[0].id);
+}
+
+/** E-posta bildiriminin sonucunu kaydeder (hata nedeni admin panelinde görünür). */
+export async function setEmailStatus(id: string, sent: boolean, error?: string) {
+  await getPool().query("UPDATE contact_messages SET email_sent = $2, email_error = $3 WHERE id = $1", [
+    id,
+    sent,
+    sent ? null : (error ?? "bilinmeyen hata").slice(0, 300),
+  ]);
 }
 
 export async function listMessages(limit = 500): Promise<{ messages: ContactMessage[]; unread: number }> {

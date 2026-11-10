@@ -43,6 +43,8 @@ export function ensureSchema(): Promise<void> {
            is_read    BOOLEAN     NOT NULL DEFAULT FALSE,
            created_at TIMESTAMPTZ NOT NULL DEFAULT now()
          );
+         ALTER TABLE contact_messages ADD COLUMN IF NOT EXISTS email_sent BOOLEAN;
+         ALTER TABLE contact_messages ADD COLUMN IF NOT EXISTS email_error TEXT;
          CREATE INDEX IF NOT EXISTS contact_messages_created_idx ON contact_messages (created_at DESC);
          CREATE TABLE IF NOT EXISTS blog_posts (
            id         TEXT PRIMARY KEY,
