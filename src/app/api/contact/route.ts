@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { isSameOrigin } from "@/lib/http/origin";
-import nodemailer from "nodemailer";
+import { mailConfigured, sendMail } from "@/lib/mail/send";
 import { clientIp, rateLimit } from "@/lib/auth/rate-limit";
 import { insertMessage, setEmailStatus } from "@/lib/db/messages";
 
@@ -71,24 +71,12 @@ export async function POST(req: Request) {
   // 2) E-posta bildirimi. Ayarlar yoksa ya da gönderim başarısızsa ve kayıt yapılmışsa yine başarı say.
   let emailed = false;
   let emailError = "";
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-    console.error("[contact] EMAIL_USER / EMAIL_PASS tanımlı değil.");
-    emailError = "EMAIL_USER / EMAIL_PASS ortam değişkenleri tanımlı değil.";
+  if (!mailConfigured()) {
+    console.error("[contact] RESEND_API_KEY ya da EMAIL_USER / EMAIL_PASS tanımlı değil.");
+    emailError = "RESEND_API_KEY ya da EMAIL_USER / EMAIL_PASS ortam değişkenleri tanımlı değil.";
   } else {
     try {
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
-        // Varsayılan zaman aşımları dakikalarca sürebilir; SMTP'ye ulaşılamazsa hızlı hata ver.
-        // VPS/Docker ortamlarında IPv6 yolu olmayınca smtp.gmail.com'a bağlantı sessizce takılır; IPv4'e zorla.
-        ...({ family: 4 } as object), // @types/nodemailer 'family' alanını bilmiyor; çalışma zamanında geçerli
-        connectionTimeout: 10_000,
-        greetingTimeout: 10_000,
-        socketTimeout: 15_000,
-      });
-
-      await transporter.sendMail({
-        from: process.env.EMAIL_USER,
+      await sendMail({
         to: ["beydanurpinarbasi@veraporta.com", "beydanur.pinarbasi@gmail.com"], // bildirim iki adrese de gider
         replyTo: email,
         subject: `beyda.dev sitenden mesaj var - ${name}`,
