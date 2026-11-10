@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { isSameOrigin } from "@/lib/http/origin";
 import nodemailer from "nodemailer";
 import { clientIp, rateLimit } from "@/lib/auth/rate-limit";
+import { insertMessage } from "@/lib/db/messages";
 
 export const runtime = "nodejs";
 
@@ -55,34 +56,49 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Geçerli bir telefon numarası girin." }, { status: 400 });
   }
 
+  const topic = typeof body.topic === "string" ? oneLine(body.topic).slice(0, 100) : "";
+
+  // 1) Önce veritabanına kaydet: e-posta başarısız olsa bile mesaj admin panelinde kalır.
+  let saved = false;
+  try {
+    await insertMessage({ name, email, phone, topic, message });
+    saved = true;
+  } catch (error) {
+    console.error("[contact] veritabanına kaydedilemedi:", error);
+  }
+
+  // 2) E-posta bildirimi. Ayarlar yoksa ya da gönderim başarısızsa ve kayıt yapılmışsa yine başarı say.
+  let emailed = false;
   if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
     console.error("[contact] EMAIL_USER / EMAIL_PASS tanımlı değil.");
-    return NextResponse.json({ error: "E-posta gönderme şu an kullanılamıyor." }, { status: 503 });
+  } else {
+    try {
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
+        // Varsayılan zaman aşımları dakikalarca sürebilir; SMTP'ye ulaşılamazsa hızlı hata ver.
+        // VPS/Docker ortamlarında IPv6 yolu olmayınca smtp.gmail.com'a bağlantı sessizce takılır; IPv4'e zorla.
+        ...({ family: 4 } as object), // @types/nodemailer 'family' alanını bilmiyor; çalışma zamanında geçerli
+        connectionTimeout: 10_000,
+        greetingTimeout: 10_000,
+        socketTimeout: 15_000,
+      });
+
+      await transporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: "beydanurpinarbasi@veraporta.com",
+        replyTo: email,
+        subject: `beyda.dev sitenden mesaj var - ${name}`,
+        text: `Gönderen: ${name} (${email})\nTelefon: ${phone}${topic ? `\nKonu: ${topic}` : ""}\n\nMesaj:\n${message}`,
+      });
+      emailed = true;
+    } catch (error) {
+      console.error("E-posta gönderme hatası:", error);
+    }
   }
 
-  try {
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
-      // Varsayılan zaman aşımları dakikalarca sürebilir; SMTP'ye ulaşılamazsa hızlı hata ver.
-      // VPS/Docker ortamlarında IPv6 yolu olmayınca smtp.gmail.com'a bağlantı sessizce takılır; IPv4'e zorla.
-      ...({ family: 4 } as object), // @types/nodemailer 'family' alanını bilmiyor; çalışma zamanında geçerli
-      connectionTimeout: 10_000,
-      greetingTimeout: 10_000,
-      socketTimeout: 15_000,
-    });
-
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to: "beydanurpinarbasi@veraporta.com",
-      replyTo: email,
-      subject: `beyda.dev sitenden mesaj var - ${name}`,
-      text: `Gönderen: ${name} (${email})\nTelefon: ${phone}\n\nMesaj:\n${message}`,
-    });
-
-    return NextResponse.json({ success: "E-posta başarıyla gönderildi!" }, { status: 200 });
-  } catch (error) {
-    console.error("E-posta gönderme hatası:", error);
-    return NextResponse.json({ error: "E-posta gönderme başarısız." }, { status: 500 });
+  if (saved || emailed) {
+    return NextResponse.json({ success: "Mesajınız alındı." }, { status: 200 });
   }
+  return NextResponse.json({ error: "Mesaj gönderilemedi." }, { status: 500 });
 }

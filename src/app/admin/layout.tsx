@@ -6,6 +6,7 @@ import {
   LayoutDashboard, 
   FileText, 
   FolderKanban, 
+  Mail,
   LogOut,
   Menu,
   X 
@@ -18,6 +19,7 @@ const sidebarItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/blog", label: "Blog", icon: FileText },
   { href: "/admin/projects", label: "Projeler", icon: FolderKanban },
+  { href: "/admin/messages", label: "Mesajlar", icon: Mail },
 ];
 
 // Tema bağlamı (sistem karanlık modu) yalnızca admin panelinde: public site kendi açık temasını kullanır.

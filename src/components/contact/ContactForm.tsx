@@ -45,8 +45,6 @@ export default function ContactForm() {
   const set = (f: Field) => (e: { target: { value: string } }) => setValues((v) => ({ ...v, [f]: e.target.value }));
   const blur = (f: Field) => () => setTouched((t) => ({ ...t, [f]: true }));
 
-  // Konu, API'de ayrı alan olmadığı için mesajın başına eklenir.
-  const fullMessage = () => `[${topic}]\n\n${values.message.trim()}`;
   const mailto = () =>
     `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(`beyda.dev · ${topic}`)}&body=${encodeURIComponent(
       `${values.message.trim()}\n\n${values.name}\n${values.email}\n${values.phone}`
@@ -66,7 +64,7 @@ export default function ContactForm() {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...values, message: fullMessage(), website }),
+        body: JSON.stringify({ ...values, topic, website }),
         signal: AbortSignal.timeout(25_000), // sunucu yanıtsız kalırsa "Gönderiliyor…" sonsuza kadar sürmesin
       });
       const data = (await res.json().catch(() => ({}))) as { error?: string };

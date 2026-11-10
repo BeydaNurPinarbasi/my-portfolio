@@ -12,7 +12,7 @@ export const CONTACT_PAGE = {
   ],
   channelsTitle: "Doğrudan ulaşmak için",
   formTitle: "Mesaj gönder",
-  privacy: "Form, mesajınızı yalnızca e-posta olarak bana iletir; site mesajları herhangi bir veritabanında saklamaz.",
+  privacy: "Form, mesajınızı bana e-posta ile iletir ve size dönebilmem için adınızla birlikte güvenli bir veritabanında saklar. Bilgileriniz üçüncü kişilerle paylaşılmaz.",
 } as const;
 
 export const CONTACT_EMAIL = "beydanur.pinarbasi@gmail.com";

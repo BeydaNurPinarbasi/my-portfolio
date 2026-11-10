@@ -1,8 +1,19 @@
 "use client";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { adminFetch } from "@/lib/admin/api";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { LayoutDashboard, FileText, FolderKanban, Mail } from "lucide-react";
 
 export default function AdminDashboard() {
+  const [messageCount, setMessageCount] = useState<{ total: number; unread: number } | null>(null);
+  useEffect(() => {
+    adminFetch("/api/admin/messages")
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => d && setMessageCount({ total: d.messages.length, unread: d.unread }))
+      .catch(() => undefined);
+  }, []);
+
   const stats = [
     {
       title: "Toplam Blog Yazısı",
@@ -20,8 +31,8 @@ export default function AdminDashboard() {
     },
     {
       title: "Mesajlar",
-      value: "0",
-      description: "Gelen iletişim mesajları",
+      value: messageCount ? String(messageCount.total) : "–",
+      description: messageCount ? `${messageCount.unread} okunmamış · iletişim formu` : "Gelen iletişim mesajları",
       icon: Mail,
       color: "text-purple-600",
     },
@@ -39,7 +50,7 @@ export default function AdminDashboard() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {stats.map((stat) => {
           const Icon = stat.icon;
-          return (
+          const card = (
             <Card key={stat.title}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-foreground">
@@ -54,6 +65,13 @@ export default function AdminDashboard() {
                 </p>
               </CardContent>
             </Card>
+          );
+          return stat.title === "Mesajlar" ? (
+            <Link key={stat.title} href="/admin/messages">
+              {card}
+            </Link>
+          ) : (
+            card
           );
         })}
       </div>
