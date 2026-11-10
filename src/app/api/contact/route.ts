@@ -86,7 +86,7 @@ export async function POST(req: Request) {
 
       await transporter.sendMail({
         from: process.env.EMAIL_USER,
-        to: "beydanurpinarbasi@veraporta.com",
+        to: ["beydanurpinarbasi@veraporta.com", "beydanur.pinarbasi@gmail.com"], // bildirim iki adrese de gider
         replyTo: email,
         subject: `beyda.dev sitenden mesaj var - ${name}`,
         text: `Gönderen: ${name} (${email})\nTelefon: ${phone}${topic ? `\nKonu: ${topic}` : ""}\n\nMesaj:\n${message}`,
