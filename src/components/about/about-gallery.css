@@ -462,6 +462,15 @@
     display: none;
   }
 }
+/* Dokunmatik: bağlantı parmakla rahat basılabilir yükseklikte. */
+@media (pointer: coarse) {
+  .cl-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin-top: 0.4rem;
+  }
+}
 /* Yatay telefon (alçak ekran): ray ve künye kartın üstüne binmesin; kart ekrana sığsın. */
 @media (max-height: 500px) and (orientation: landscape) {
   .cl-rail,

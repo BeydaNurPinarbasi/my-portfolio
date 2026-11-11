@@ -1490,6 +1490,13 @@ html.st-cursor-on textarea {
     font-size: 8vw;
   }
 }
+/* Dar/dikey düzende perde başlığı yapının önünden geçer: zemin rengi hale okunurluğu korur. */
+@media (max-width: 767px), (max-aspect-ratio: 1/1) {
+  .st-act-word,
+  .st-act-def {
+    text-shadow: 0 0 18px var(--imm-bg);
+  }
+}
 
 /* ---- Yatay telefon (alçak ekran): metin sol yarıda, yapı sağda; kalabalık yapan öğeler gizli -- */
 @media (max-height: 500px) and (orientation: landscape) {
@@ -1504,10 +1511,14 @@ html.st-cursor-on textarea {
   .st-lead,
   .st-p,
   .st-act-def {
-    max-width: min(34rem, 52vw);
+    max-width: min(34rem, 46vw);
   }
   .st-act-word {
-    font-size: clamp(3rem, 24vh, 6.5rem);
+    font-size: clamp(2.6rem, 18vh, 5rem);
+  }
+  .st-lead,
+  .st-act-def {
+    text-shadow: 0 0 14px var(--imm-bg);
   }
   .st-h3 {
     font-size: clamp(1.6rem, 9vh, 2.4rem);
