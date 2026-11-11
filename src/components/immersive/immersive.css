@@ -6,22 +6,55 @@
      1) Palet: ham değerler, bileşenlerde doğrudan KULLANILMAZ.
      2) Roller: bileşenler yalnızca bunları kullanır.
      3) Kategori: --cat, her yetkinlik maddesinde kendi tonuna ayarlanır (3D katmanla aynı). */
-  --p-cream: #fff7e6;
   --p-blush: #f7c8d3;
   --p-rose: #b46a72;
   --p-sage: #a8b58a;
   --p-sky: #a9b7c6;
-  --p-midnight: #2d3a47;
 
-  --imm-bg: var(--p-cream); /* zemin */
-  --imm-ink: var(--p-midnight); /* birincil metin, kontur */
-  --imm-ink-2: color-mix(in srgb, var(--p-midnight) 76%, var(--p-cream)); /* ikincil metin, 4.5:1 üstü */
-  --imm-ink-3: color-mix(in srgb, var(--p-midnight) 68%, var(--p-cream)); /* etiket, pasif öğe: küçük metinde ~4.6:1 */
-  --imm-line: color-mix(in srgb, var(--p-midnight) 16%, transparent); /* ayırıcı çizgi */
-  --imm-accent: var(--p-rose); /* odak: aktif durum, ilerleme, ışık hattı (grafik) */
-  --imm-accent-ink: #8c4952; /* odak rengi METİN için: rose küçük metinde 4.5:1 vermez */
-  --imm-wash: var(--p-blush); /* vurgu yüzeyi: seçili/odak arka planı */
+  /* Roller KOYU temada tanımlı (varsayılan); açık tema aşağıdaki :root[data-theme="light"] bloğunda yalnızca
+     değişen rolleri geçersiz kılar. Seçim <html data-theme> üzerinde (theme.ts); 3D karşılığı: palette.ts THEMES. */
+  --imm-bg: #12161c; /* zemin: derin gece mavisi */
+  --imm-ink: #efe6d4; /* birincil metin, kontur: sıcak krem */
+  --imm-ink-2: color-mix(in srgb, var(--imm-ink) 78%, var(--imm-bg)); /* ikincil metin, 4.5:1 üstü */
+  --imm-ink-3: color-mix(in srgb, var(--imm-ink) 62%, var(--imm-bg)); /* etiket, pasif öğe: küçük metinde 4.5:1 üstü */
+  --imm-line: color-mix(in srgb, var(--imm-ink) 16%, transparent); /* ayırıcı çizgi */
+  --imm-accent: #d58e97; /* odak: aktif durum, ilerleme, ışık hattı (grafik); koyuda rose açılır */
+  --imm-accent-ink: #e9a9b1; /* odak rengi METİN için: koyu zeminde 4.5:1 */
+  --imm-wash: color-mix(in srgb, var(--p-blush) 24%, var(--imm-bg)); /* vurgu yüzeyi: seçili/odak arka planı */
+  --imm-glow-1: rgba(247, 200, 211, 0.16); /* arka plan ışımaları (blush, sky, sage) ve kenar kararması */
+  --imm-glow-2: rgba(169, 183, 198, 0.12);
+  --imm-glow-3: rgba(168, 181, 138, 0.1);
+  --imm-vignette: rgba(0, 0, 0, 0.35);
+  --imm-grain-blend: screen;
+  --imm-grain-opacity: 0.06;
+  --imm-logo-filter: brightness(0) invert(1) sepia(0.12); /* koyu renkli şeffaf logo → krem */
   --cat: var(--p-blush);
+}
+
+/* AÇIK TEMA: krem zemin, gece mavisi metin. */
+:root[data-theme="light"] {
+  --imm-bg: #fff7e6;
+  --imm-ink: #2d3a47;
+  --imm-ink-2: color-mix(in srgb, var(--imm-ink) 76%, var(--imm-bg));
+  --imm-ink-3: color-mix(in srgb, var(--imm-ink) 68%, var(--imm-bg));
+  --imm-accent: var(--p-rose);
+  --imm-accent-ink: #8c4952; /* rose küçük metinde 4.5:1 vermez */
+  --imm-wash: var(--p-blush);
+  --imm-glow-1: rgba(247, 200, 211, 0.55);
+  --imm-glow-2: rgba(169, 183, 198, 0.4);
+  --imm-glow-3: rgba(168, 181, 138, 0.35);
+  --imm-vignette: rgba(45, 58, 71, 0.1);
+  --imm-grain-blend: multiply;
+  --imm-grain-opacity: 0.05;
+  --imm-logo-filter: none;
+}
+
+/* Form kontrolleri ve kaydırma çubukları yalnızca public sayfalarda temaya uyar; admin kendi temasını korur. */
+:root:has(.imm-root) {
+  color-scheme: dark;
+}
+:root[data-theme="light"]:has(.imm-root) {
+  color-scheme: light;
 }
 
 /* Public sayfalarda (imm-root içeren) body zemini krem; admin kendi temasını korur. */
@@ -104,18 +137,18 @@ body:has(.imm-root) {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(60% 55% at 72% 38%, rgba(247, 200, 211, 0.55), transparent 70%),
-    radial-gradient(70% 60% at 14% 8%, rgba(169, 183, 198, 0.4), transparent 70%),
-    radial-gradient(90% 70% at 50% 120%, rgba(168, 181, 138, 0.35), transparent 60%),
-    radial-gradient(120% 90% at 50% 50%, transparent 60%, rgba(45, 58, 71, 0.1) 100%);
+    radial-gradient(60% 55% at 72% 38%, var(--imm-glow-1), transparent 70%),
+    radial-gradient(70% 60% at 14% 8%, var(--imm-glow-2), transparent 70%),
+    radial-gradient(90% 70% at 50% 120%, var(--imm-glow-3), transparent 60%),
+    radial-gradient(120% 90% at 50% 50%, transparent 55%, var(--imm-vignette) 100%);
 }
 /* İnce film greni: SVG turbulence, ~1KB, ağ isteği yok. */
 .imm-bg::after {
   content: "";
   position: absolute;
   inset: 0;
-  opacity: 0.05;
-  mix-blend-mode: multiply;
+  opacity: var(--imm-grain-opacity);
+  mix-blend-mode: var(--imm-grain-blend);
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
 }
 
@@ -440,7 +473,7 @@ body:has(.imm-root) {
     height: 46%;
     z-index: 3;
     pointer-events: none;
-    background: linear-gradient(to top, rgba(255, 247, 230, 0.95) 8%, rgba(255, 247, 230, 0.65) 55%, transparent);
+    background: linear-gradient(to top, color-mix(in srgb, var(--imm-bg) 95%, transparent) 8%, color-mix(in srgb, var(--imm-bg) 65%, transparent) 55%, transparent);
     opacity: 0;
     transition: opacity 0.6s ease;
   }

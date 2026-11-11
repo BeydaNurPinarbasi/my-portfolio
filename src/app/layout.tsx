@@ -1,7 +1,9 @@
 import React from "react";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { DM_Mono, DM_Sans } from "next/font/google";
 import { PROFILE } from "@/content/profile";
+import { THEMES } from "@/lib/design/palette";
+import { THEME_STORAGE_KEY } from "@/lib/design/theme";
 import "./styles/globals.css";
 import "@/components/immersive/immersive.css";
 import "@/components/story/story.css";
@@ -33,9 +35,18 @@ export const metadata: Metadata = {
   alternates: { canonical: "./" },
 };
 
+// Tarayıcı çubuğu rengi varsayılan (koyu) tema ile başlar; geçişte theme.ts bu etiketi günceller.
+export const viewport: Viewport = { themeColor: THEMES.dark.bg };
+
+// İlk boyamadan ÖNCE kayıtlı tema seçimini uygular (açık seçen ziyaretçi koyu parlamasın). Varsayılan: koyu.
+const THEME_INIT = `try{var t=localStorage.getItem(${JSON.stringify(THEME_STORAGE_KEY)});var l=t==="light";document.documentElement.dataset.theme=l?"light":"dark";if(l){var m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute("content",${JSON.stringify(THEMES.light.bg)})}}catch(e){}`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="tr" className={`${display.variable} ${mono.variable}`} suppressHydrationWarning>
+    <html lang="tr" data-theme="dark" className={`${display.variable} ${mono.variable}`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT }} />
+      </head>
       <body className="bg-background flex flex-col min-h-screen">{children}</body>
     </html>
   );

@@ -38,7 +38,8 @@ import {
   Vector3,
 } from "three";
 import { MICRO } from "@/content/microworld";
-import { PALETTE, TONES } from "@/lib/design/palette";
+import { PALETTE, THEMES, TONES } from "@/lib/design/palette";
+import { currentTheme, onThemeChange, setSrgb } from "@/lib/design/theme";
 
 export const MICRO_W = 10; // yerel platform genişliği
 export const MICRO_D = 5;
@@ -145,15 +146,25 @@ interface Deps {
 }
 
 export function createMicroWorld({ fog }: Deps): MicroWorld {
-  const ink = new Vector3(0.176, 0.227, 0.278);
   const accent = new Vector3(0.706, 0.416, 0.447);
-  const bg = new Vector3(1.0, 0.969, 0.902);
   const toVec = (hex: string) => {
     const n = parseInt(hex.slice(1), 16);
     return new Vector3(((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255);
   };
-  const inkColor = new Color(PALETTE.midnight);
+  // Shader uniform'ları sRGB değeri (diğer sahnelerle aynı kural); kaynak: palette.ts THEMES.
+  const ink = toVec(THEMES[currentTheme()].ink);
+  const bg = toVec(THEMES[currentTheme()].bg);
+  const inkColor = new Color(THEMES[currentTheme()].ink);
+  // Mürekkep renginde sabit oluşturulan malzemeler: tema değişince hepsi güncellenir.
+  const inkMats: { color: Color }[] = [];
   const accentColor = new Color(PALETTE.rose);
+
+  const offTheme = onThemeChange((t) => {
+    setSrgb(ink, THEMES[t].ink);
+    setSrgb(bg, THEMES[t].bg);
+    inkColor.set(THEMES[t].ink);
+    inkMats.forEach((m) => m.color.copy(inkColor));
+  });
 
   const geos: BufferGeometry[] = [];
   const g = <T extends BufferGeometry>(geo: T): T => {
@@ -256,6 +267,7 @@ export function createMicroWorld({ fog }: Deps): MicroWorld {
   const shellTint = toVec(TONES.sage);
   const shellSurf = surfMat(shellTint);
   const shellLine = new LineBasicMaterial({ color: inkColor.clone(), transparent: true, opacity: 0.75 });
+  inkMats.push(shellLine);
   const shell = new Group();
   const shellMeshes: Mesh[] = [];
   const shellBox = (w: number, h: number, d: number, parent: Object3D, pos: [number, number, number]) => {
@@ -308,6 +320,7 @@ export function createMicroWorld({ fog }: Deps): MicroWorld {
       transparent: true,
       opacity: 0.55,
     });
+    if (f.kind !== "req") inkMats.push(mat);
     const line = new Line(geo, mat);
     line.computeLineDistances();
     flowRoot.add(line);
@@ -323,10 +336,12 @@ export function createMicroWorld({ fog }: Deps): MicroWorld {
   reqPackets.frustumCulled = false;
   resPackets.frustumCulled = false;
   flowRoot.add(reqPackets, resPackets);
+  inkMats.push(resPackets.material as MeshBasicMaterial);
   // Ok başları: yönü hareketsiz karede de okunur kılar.
   const arrowGeo = g(new ConeGeometry(0.085, 0.24, 10));
   const arrows: Mesh[] = flows.map((f) => {
     const m = new Mesh(arrowGeo, new MeshBasicMaterial({ color: (f.kind === "req" ? accentColor : inkColor).clone() }));
+    if (f.kind !== "req") inkMats.push(m.material as MeshBasicMaterial);
     const pt = f.curve.getPoint(0.62);
     const tan = f.curve.getTangent(0.62);
     m.position.copy(pt);
@@ -446,6 +461,7 @@ export function createMicroWorld({ fog }: Deps): MicroWorld {
     },
 
     dispose() {
+      offTheme();
       geos.forEach((geo) => geo.dispose());
       services.forEach((s) => {
         s.surf.dispose();

@@ -30,12 +30,16 @@
 }
 .st-nav-logo {
   display: block;
+  flex-shrink: 0; /* dar ekranda logo ezilmesin; yer menü aralığından kazanılır */
   line-height: 0;
 }
 .st-nav-logo img {
   display: block;
   width: auto;
   height: 1.55rem;
+  /* Logo koyu renkli şeffaf PNG: koyu temada krem mürekkebe çevrilir (--imm-logo-filter). */
+  filter: var(--imm-logo-filter);
+  opacity: 0.94;
 }
 .st-nav ul {
   display: flex;
@@ -43,6 +47,34 @@
   margin: 0;
   padding: 0;
   list-style: none;
+}
+/* Tema düğmesi: gezinmenin sağ ucunda, metin bağlantılarıyla aynı mürekkep rengi. */
+.st-nav {
+  gap: 0.6rem;
+}
+.st-nav > nav {
+  margin-left: auto;
+}
+.st-theme {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  margin: 0 -0.4rem 0 0;
+  padding: 0;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--imm-ink-2);
+  cursor: pointer;
+  transition:
+    color 0.25s ease,
+    background-color 0.25s ease;
+}
+.st-theme:hover {
+  color: var(--imm-accent-ink);
+  background: color-mix(in srgb, var(--imm-ink) 8%, transparent);
 }
 .st-nav a[aria-current] {
   color: var(--imm-accent-ink);
@@ -1467,6 +1499,25 @@ html.st-cursor-on textarea {
   }
 }
 
+/* ---- Çok dar telefon (≤360px): logo + 3 bağlantı + tema düğmesi tek satıra sığsın ------------- */
+@media (max-width: 360px) {
+  .st-nav {
+    gap: 0.2rem;
+    font-size: 0.66rem;
+    letter-spacing: 0.03em;
+  }
+  .st-nav ul {
+    gap: 0.6rem;
+  }
+  .st-nav-logo img {
+    height: 1.1rem;
+  }
+  .st-nav .st-theme {
+    width: 36px;
+    height: 36px;
+  }
+}
+
 /* ---- Tablet dikey: kart düzeni korunur ama kartlar okunur genişlikte ve ortada --------------- */
 @media (min-width: 768px) and (max-aspect-ratio: 1/1) {
   .st-root {
@@ -1552,6 +1603,10 @@ html.st-cursor-on textarea {
     align-items: center;
     min-height: 44px;
     margin-top: 0.6rem;
+  }
+  .st-theme {
+    width: 44px;
+    height: 44px;
   }
   .st-cap-btn {
     min-height: 2.25rem;

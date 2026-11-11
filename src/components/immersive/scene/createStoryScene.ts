@@ -33,7 +33,8 @@ import { gsap } from "gsap";
 import { buildInstances, FIELD_NODES, formRadial, LAYER_COUNT, SLAB_SIZE, sectorPoint } from "./layers";
 import { CAPABILITIES } from "@/content/expertise";
 import { DOMAIN_LINKS } from "@/content/domains";
-import { PALETTE, TONES } from "@/lib/design/palette";
+import { PALETTE, THEMES, TONES } from "@/lib/design/palette";
+import { currentTheme, onThemeChange, setSrgb } from "@/lib/design/theme";
 import { createMicroWorld, MICRO_PICK_BASE, MICRO_W, MICRO_D } from "./micro";
 import { GROUND_FRAG, GROUND_VERT, LINK_FRAG, LINK_VERT, MODULE_FRAG, MODULE_VERT, SPINE_FRAG, SPINE_VERT } from "./shaders";
 
@@ -166,7 +167,7 @@ const srgb = (hex: string) => {
   const n = parseInt(hex.slice(1), 16);
   return new Vector3(((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255);
 };
-const C = { ink: srgb(PALETTE.midnight), accent: srgb(PALETTE.rose), bg: srgb(PALETTE.cream) };
+const C = { ink: srgb(THEMES[currentTheme()].ink), accent: srgb(PALETTE.rose), bg: srgb(THEMES[currentTheme()].bg) };
 const LAYER_TINTS = CAPABILITIES.map((c) => srgb(TONES[c.tone]));
 
 const KEYS = Object.keys({
@@ -401,6 +402,12 @@ export function createStoryScene(canvas: HTMLCanvasElement, opts: Options): Stor
   let height = 1;
   let running = true;
   let disposed = false;
+  // Tema değişince ortak renk uniform'ları yerinde güncellenir; statik katmanda tek kare yeniden çizilir.
+  const offTheme = onThemeChange((t) => {
+    setSrgb(C.ink, THEMES[t].ink);
+    setSrgb(C.bg, THEMES[t].bg);
+    if (isStatic) api.snap();
+  });
   let sweepTween: gsap.core.Tween | null = null;
   const pointer = { x: 0, y: 0, tx: 0, ty: 0, on: 0, onTarget: 0 };
   const pointerWorld = new Vector3();
@@ -1006,6 +1013,7 @@ export function createStoryScene(canvas: HTMLCanvasElement, opts: Options): Stor
     },
     dispose() {
       disposed = true;
+      offTheme();
       window.clearTimeout(warmTimer);
       sweepTween?.kill();
       gsap.killTweensOf([shared.uSweep, moduleMat.uniforms.uPulse]);

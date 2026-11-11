@@ -28,7 +28,8 @@ import {
 import { gsap } from "gsap";
 import { buildInstances, LAYER_COUNT } from "./layers";
 import { CAPABILITIES } from "@/content/expertise";
-import { PALETTE, TONES } from "@/lib/design/palette";
+import { PALETTE, THEMES, TONES } from "@/lib/design/palette";
+import { currentTheme, onThemeChange, setSrgb } from "@/lib/design/theme";
 import {
   GROUND_FRAG,
   GROUND_VERT,
@@ -70,9 +71,9 @@ const srgb = (hex: string) => {
   return new Vector3(((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255);
 };
 const C = {
-  ink: srgb(PALETTE.midnight), // mürekkep: kenar çizgileri
+  ink: srgb(THEMES[currentTheme()].ink), // mürekkep: kenar çizgileri
   accent: srgb(PALETTE.rose), // odak: aktif katman, ışık hattı
-  bg: srgb(PALETTE.cream), // zemin: sis ve parlama hedefi
+  bg: srgb(THEMES[currentTheme()].bg), // zemin: sis ve parlama hedefi
 };
 // Katman i'nin yüzey tonu = yetkinlik i'nin kategori rengi (listeyle aynı).
 const LAYER_TINTS = CAPABILITIES.map((c) => srgb(TONES[c.tone]));
@@ -193,6 +194,11 @@ export function createHeroScene(canvas: HTMLCanvasElement, opts: Options): HeroS
   const pointer = { x: 0, y: 0, tx: 0, ty: 0, on: 0, onTarget: 0 };
   let running = true;
   let disposed = false;
+  const offTheme = onThemeChange((t) => {
+    setSrgb(C.ink, THEMES[t].ink);
+    setSrgb(C.bg, THEMES[t].bg);
+    if (isStatic) api.renderOnce();
+  });
   let sweepTween: gsap.core.Tween | null = null;
   let introTween: gsap.core.Tween | null = null;
   // Kurulum animasyonu ilk RENDER EDİLEN kareden sonra başlar: ilk karede shader derlemesi
@@ -375,6 +381,7 @@ export function createHeroScene(canvas: HTMLCanvasElement, opts: Options): HeroS
     },
     dispose() {
       disposed = true;
+      offTheme();
       introTween?.kill();
       sweepTween?.kill();
       gsap.killTweensOf([shared.uSweep, shared.uAssemble, moduleMat.uniforms.uPulse]);

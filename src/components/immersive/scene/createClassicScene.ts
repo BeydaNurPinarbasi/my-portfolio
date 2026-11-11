@@ -47,7 +47,8 @@ import {
 } from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
-import { PALETTE } from "@/lib/design/palette";
+import { PALETTE, THEMES } from "@/lib/design/palette";
+import { currentTheme, onThemeChange, type ThemeName } from "@/lib/design/theme";
 import { baroqueRelief, columnBase, columnShaft, corinthianCapital, pedestal, stoneTextures, type StoneKind } from "./classic/procedural";
 
 export type ClassicTier = "full" | "lite" | "static";
@@ -143,6 +144,13 @@ export const STATIONS: readonly Station[] = [
 
 const DRAG_LIMIT = { az: 0.55, el: 0.22 };
 
+// Işık ve yüzey ayarı temaya göre. Koyuda ışıklar serinleşir, gölge belirginleşir, pastel duvar alanları
+// ışıklı panel gibi düşük opaklıkta kalır; açıkta krem zemin ve yumuşak gölge.
+const LOOK = {
+  dark: { env: 0.18, key: 3.4, rim: 1.6, rimColor: 0xaebfd6, hemiSky: 0x9fb0c8, hemiGround: 0x1b212a, hemi: 0.55, shadow: 0.85, fields: [0.2, 0.22, 0.15] },
+  light: { env: 0.3, key: 3.0, rim: 1.2, rimColor: 0xdfe6ee, hemiSky: 0xfff6e6, hemiGround: 0xa9b7c6, hemi: 0.9, shadow: 0.7, fields: [0.45, 0.5, 0.35] },
+} as const;
+
 export function createClassicScene(canvas: HTMLCanvasElement, opts: Options): ClassicScene {
   const full = opts.tier === "full";
   const reduce = opts.reduce;
@@ -165,7 +173,6 @@ export function createClassicScene(canvas: HTMLCanvasElement, opts: Options): Cl
   const pmrem = new PMREMGenerator(renderer);
   const envTex = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
   scene.environment = envTex;
-  scene.environmentIntensity = 0.3;
   const key = new DirectionalLight(0xffe6c4, 3.0);
   key.position.set(-7, 10, 7);
   key.castShadow = true;
@@ -180,21 +187,21 @@ export function createClassicScene(canvas: HTMLCanvasElement, opts: Options): Cl
   key.shadow.bias = -0.0006;
   key.shadow.normalBias = 0.06;
   key.shadow.radius = 5;
-  key.shadow.intensity = 0.7; // krem zeminde gölge yumuşak ve hafif soğuk kalsın
   key.target.position.set(0, 2.5, -1);
   scene.add(key, key.target);
   const rim = new DirectionalLight(0xdfe6ee, 1.2);
   rim.position.set(7, 5, -6);
   scene.add(rim);
-  scene.add(new HemisphereLight(0xfff6e6, 0xa9b7c6, 0.9));
+  const hemi = new HemisphereLight(0xfff6e6, 0xa9b7c6, 0.9);
+  scene.add(hemi);
   // İmleç ışığı: yüzeye düşen, parçaya göre pastel tonlu tek nokta ışığı.
   const touch = new PointLight(0xf7c8d3, 0, 7, 2);
   scene.add(touch);
 
-  // Uzakta zemin ve nesneler sayfanın kremine karışır (sınır çizgisi görünmesin).
-  scene.fog = new Fog(0xfff7e6, 26, 62);
+  // Uzakta zemin ve nesneler sayfanın koyu zeminine karışır (sınır çizgisi görünmesin).
+  scene.fog = new Fog(THEMES[currentTheme()].bg, 26, 62);
   // ---- Zemin ----
-  const floor = new Mesh(new CircleGeometry(30, 96), new MeshStandardMaterial({ color: 0xf7eedb, roughness: 0.95, metalness: 0, envMapIntensity: 0.1 }));
+  const floor = new Mesh(new CircleGeometry(30, 96), new MeshStandardMaterial({ color: THEMES[currentTheme()].floor, roughness: 0.95, metalness: 0, envMapIntensity: 0.1 }));
   floor.rotation.x = -Math.PI / 2;
   floor.receiveShadow = true;
   scene.add(floor);
@@ -215,28 +222,33 @@ export function createClassicScene(canvas: HTMLCanvasElement, opts: Options): Cl
   };
 
   // Arka plan renk alanları: galeri duvarı gibi büyük, yumuşak pastel yüzeyler (paletin tonları, sis uygulanmaz).
+  const fieldMats: MeshBasicMaterial[] = [];
   const field = (color: string, w: number, h: number, x: number, y: number, z: number, opacity: number) => {
     const m = new Mesh(new PlaneGeometry(w, h), new MeshBasicMaterial({ color, transparent: true, opacity, depthWrite: false, toneMapped: false, fog: false }));
     m.position.set(x, y, z);
     scene.add(m);
+    fieldMats.push(m.material as MeshBasicMaterial);
     disposables.push(m.geometry, m.material as MeshBasicMaterial);
   };
-  field(PALETTE.blush, 22, 14, -9, 6.5, -24, 0.45);
-  field(PALETTE.sky, 16, 12, 9, 5.5, -27, 0.5);
-  field(PALETTE.sage, 34, 8, 0, 3.4, -33, 0.35);
+  // Koyu zeminde pastel alanlar düşük opaklıkta: duvar ışıklı panel gibi okunur, mermeri bastırmaz.
+  field(PALETTE.blush, 22, 14, -9, 6.5, -24, 0.2);
+  field(PALETTE.sky, 16, 12, 9, 5.5, -27, 0.22);
+  field(PALETTE.sage, 34, 8, 0, 3.4, -33, 0.15);
 
   // ---- Dijital katman: ince halkalar, yüzen parçalar, toz ----
   const digital = new Group();
   scene.add(digital);
   const tones = [PALETTE.sky, PALETTE.blush, PALETTE.rose, PALETTE.sage];
-  const ringTones = [PALETTE.midnight, PALETTE.rose, PALETTE.sky];
+  const ringTones = [THEMES[currentTheme()].ink, PALETTE.rose, PALETTE.sky];
   const rings: Mesh[] = [];
+  let inkRing: MeshBasicMaterial | null = null; // mürekkep renkli halka: tema ile değişir
   ringTones.forEach((c, i) => {
     const r = new Mesh(new TorusGeometry(1.7 + i * 0.55, 0.0045, 6, 220), new MeshBasicMaterial({ color: c, transparent: true, opacity: 0.5 - i * 0.1, toneMapped: false }));
     r.position.set(0, BUST_Y + 0.2 * BUST_SCALE, 0);
     r.rotation.set(1.25 + i * 0.22, 0, 0.3 * (i % 2 ? 1 : -1));
     digital.add(r);
     rings.push(r);
+    if (i === 0) inkRing = r.material as MeshBasicMaterial;
     disposables.push(r.geometry, r.material as MeshBasicMaterial);
   });
   const shardGeo = new OctahedronGeometry(1);
@@ -402,6 +414,28 @@ export function createClassicScene(canvas: HTMLCanvasElement, opts: Options): Cl
       a.on = v3.z > -1 && v3.z < 1 && a.x > 0 && a.x < w && a.y > 0 && a.y < h;
     });
   }
+
+  // Tema: ışık, sis, zemin, duvar alanları ve mürekkep halkası yerinde güncellenir; gölge haritası zemin
+  // rengine bağlı olmadığından yeniden üretilmez (yalnızca yoğunluğu değişir).
+  const applyTheme = (t: ThemeName, draw = true) => {
+    const th = THEMES[t];
+    const look = LOOK[t];
+    scene.environmentIntensity = look.env;
+    key.intensity = look.key;
+    key.shadow.intensity = look.shadow;
+    rim.intensity = look.rim;
+    rim.color.set(look.rimColor);
+    hemi.color.set(look.hemiSky);
+    hemi.groundColor.set(look.hemiGround);
+    hemi.intensity = look.hemi;
+    (scene.fog as Fog).color.set(th.bg);
+    (floor.material as MeshStandardMaterial).color.set(th.floor);
+    fieldMats.forEach((m, i) => (m.opacity = look.fields[i]));
+    inkRing?.color.set(th.ink);
+    if (draw && !lost) renderer.render(scene, camera);
+  };
+  applyTheme(currentTheme(), false);
+  const offTheme = onThemeChange((t) => applyTheme(t));
 
   function render(time: number, dt: number) {
     if (lost) return;
@@ -596,6 +630,7 @@ export function createClassicScene(canvas: HTMLCanvasElement, opts: Options): Cl
       running = a;
     },
     dispose() {
+      offTheme();
       canvas.removeEventListener("webglcontextlost", onLost);
       disposables.forEach((d) => d.dispose());
       pmrem.dispose();

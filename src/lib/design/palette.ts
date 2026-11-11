@@ -14,6 +14,22 @@ export const PALETTE = {
   midnight: "#2D3A47", // Midnight Lagoon: metin
 } as const;
 
+// TEMALAR: pastel tonlar (PALETTE/TONES) iki temada da aynı; zemin ve mürekkep değişir.
+// CSS karşılığı: immersive.css (--imm-bg, --imm-ink, --imm-floor). İkisi birlikte değişir.
+// 3D sahneler seçili temayı theme.ts üzerinden okur ve değişimi canlı izler.
+export const THEMES = {
+  dark: {
+    bg: "#12161c", // zemin: derin gece mavisi (sis ve parlama hedefi)
+    floor: "#1b212a", // galeri zemini: zeminden bir ton açık
+    ink: "#EFE6D4", // mürekkep: kenar çizgileri, çizim hatları (sıcak krem)
+  },
+  light: {
+    bg: PALETTE.cream,
+    floor: "#F7EEDB",
+    ink: PALETTE.midnight,
+  },
+} as const;
+
 // Paletten türetilmiş iki ara ton: 5 kategori için 4 pastel yetmediğinden.
 export const TONES = {
   blush: PALETTE.blush,

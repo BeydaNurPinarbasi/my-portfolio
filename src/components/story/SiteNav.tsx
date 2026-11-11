@@ -3,6 +3,7 @@ import Link from "next/link";
 import wordmark from "@/assets/brand/logo-wordmark.png"; // şeffaf, kırpılmış, 720 px (kaynak: logo.png)
 import { PROFILE } from "@/content/profile";
 import { ROUTES } from "@/content/routes";
+import ThemeToggle from "./ThemeToggle";
 
 // Site gezinmesi. Bağlantılar content/routes.ts'ten (production'a taşınırken tek yerden değişir).
 const LINKS = [
@@ -30,6 +31,7 @@ export default function SiteNav({ current }: { current: string }) {
           ))}
         </ul>
       </nav>
+      <ThemeToggle />
     </header>
   );
 }
