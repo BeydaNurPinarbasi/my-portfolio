@@ -1278,7 +1278,10 @@ html.st-cursor-on textarea {
 }
 
 /* ---- Mobil: yapı üst yarıda, metin alt yarıda okunabilirlik kartında ---------------------- */
-@media (max-width: 767px) {
+/* Dikey ekranlar (tablet dikey, dar pencere) da bu düzeni kullanır: 3D sahne aspect < 1 olduğunda
+   konuyu zaten üst yarıya alır (createStoryScene `wide`); metin masaüstü düzeninde kalırsa yapının
+   üstüne biner. Sorgu StoryStage.tsx'teki NARROW_QUERY ile aynı olmalı. */
+@media (max-width: 767px), (max-aspect-ratio: 1/1) {
   .st-root {
     --copy-w: 100%;
   }
@@ -1461,6 +1464,87 @@ html.st-cursor-on textarea {
   }
   .st-plain {
     padding-top: 40svh;
+  }
+}
+
+/* ---- Tablet dikey: kart düzeni korunur ama kartlar okunur genişlikte ve ortada --------------- */
+@media (min-width: 768px) and (max-aspect-ratio: 1/1) {
+  .st-root {
+    --copy-w: 36rem;
+  }
+  .st-hero .st-copy,
+  .st-ch .st-copy,
+  .st-plain .st-copy {
+    width: 100%;
+    max-width: var(--copy-w);
+    margin-inline: auto;
+    padding: 1.6rem 1.8rem;
+  }
+  .st-h1 {
+    font-size: clamp(2.4rem, 5.6vw, 3.6rem);
+  }
+  .st-act-word {
+    font-size: 15vw;
+  }
+  .st-value {
+    font-size: 8vw;
+  }
+}
+
+/* ---- Yatay telefon (alçak ekran): metin sol yarıda, yapı sağda; kalabalık yapan öğeler gizli -- */
+@media (max-height: 500px) and (orientation: landscape) {
+  .st-hud,
+  .st-rail,
+  .st-cue {
+    display: none;
+  }
+  .st-h1 {
+    font-size: clamp(1.8rem, 10vh, 2.8rem);
+  }
+  .st-lead,
+  .st-p,
+  .st-act-def {
+    max-width: min(34rem, 52vw);
+  }
+  .st-act-word {
+    font-size: clamp(3rem, 24vh, 6.5rem);
+  }
+  .st-h3 {
+    font-size: clamp(1.6rem, 9vh, 2.4rem);
+  }
+  .st-h2--big {
+    font-size: clamp(2rem, 13vh, 3.4rem);
+  }
+  .st-hero {
+    padding-top: var(--nav-h);
+    padding-bottom: 2.5rem;
+  }
+  .st-ch--discovery .st-copy,
+  .st-ch--creation .st-copy,
+  .st-ch--layers .st-copy,
+  .st-ch--inquiry .st-copy,
+  .st-ch--vision .st-copy {
+    top: calc(var(--nav-h) + 0.5rem);
+  }
+}
+
+/* ---- Dokunmatik: menü ve düğmelerde parmakla rahat basılabilir hedefler ---------------------- */
+@media (pointer: coarse) {
+  .st-nav a:not(.st-nav-logo),
+  .st-nav-logo {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+  }
+  .st-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    margin-top: 0.6rem;
+  }
+  .st-cap-btn {
+    min-height: 2.25rem;
+    align-items: center;
   }
 }
 

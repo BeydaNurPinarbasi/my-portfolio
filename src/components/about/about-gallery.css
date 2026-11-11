@@ -462,6 +462,33 @@
     display: none;
   }
 }
+/* Yatay telefon (alçak ekran): ray ve künye kartın üstüne binmesin; kart ekrana sığsın. */
+@media (max-height: 500px) and (orientation: landscape) {
+  .cl-rail,
+  .cl-credit {
+    display: none;
+  }
+  .ag-sec {
+    padding-bottom: 1.5rem;
+  }
+  .ag-card {
+    padding: 0.85rem 1.05rem 0.95rem;
+  }
+  .ag-card .cl-p {
+    font-size: 0.92rem;
+    line-height: 1.5;
+  }
+  .ag-card .cl-qs {
+    font-size: 0.8rem;
+    gap: 0.35rem;
+  }
+  .ag-card .cl-title {
+    font-size: 1.6rem;
+  }
+  .ag-act-title {
+    font-size: clamp(2.2rem, 16vh, 3.4rem);
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   .cl-canvas,
   .cl-mark,

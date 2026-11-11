@@ -32,6 +32,8 @@ const FocusPanel = dynamic(() => import("./FocusPanel"), { ssr: false });
 
 const UI_SELECTOR = "a,button,summary,input,textarea,select,label";
 const NATIVE_SELECTOR = ".st-copy,.st-focus,.st-nav,.st-rail,.st-footer";
+// Dar düzen: telefon veya dikey ekran. story.css'teki mobil @media sorgusuyla aynı olmalı.
+const NARROW_QUERY = "(max-width: 767px), (max-aspect-ratio: 1/1)";
 type Region = "ui" | "native" | "bg";
 const regionOf = (t: EventTarget | null): Region => {
   const el = t as Element | null;
@@ -157,7 +159,7 @@ export default function StoryStage({ children }: { children: ReactNode }) {
     let pos = 0;
     let sectionIdx = -1;
     let capIdx = -2;
-    const narrow = window.matchMedia("(max-width: 767px)").matches;
+    const narrow = window.matchMedia(NARROW_QUERY).matches;
 
     // ---- Etkileşim durumu (docs/interaction-architecture.md) ---------------------------------
     // fine: gerçek imleç (hover + ince). Dokunmatikte hover/parallax/imleç yok; dokun-seç, tekrar dokun-aç.
